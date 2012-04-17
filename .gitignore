@@ -1,3 +1,5 @@
+# Java ignore #
+
 *.class
 
 # Package Files #
@@ -5,5 +7,54 @@
 *.war
 *.ear
 
-# Eclipse #
-.metadata/*
+
+
+# Eclipse global ignore #
+
+*.pydevproject
+.project
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# CDT-specific
+.cproject
+
+# PDT-specific
+.buildpath
+
+
+
+# Linux global ignore #
+
+.*
+!.gitignore
+*~
+
+# KDE
+.directory
+
+
+
+# Windows global ignore #
+
+# Windows image file caches
+Thumbs.db 
+
+# Folder config file
+Desktop.ini
