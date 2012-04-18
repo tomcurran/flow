@@ -43,12 +43,12 @@ public class Driver {
 		final ClientController controller = new ClientController(model, serverIp, rtspServerPort);
 
 		SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-        		ClientView view = new ClientView(model, controller);
-                view.setVisible(true);
-        		ClientView view2 = new ClientView(model, controller);
-                view2.setVisible(true);
-            }
+			public void run() {
+				ClientView view = new ClientView(model, controller);
+				view.setVisible(true);
+//				ClientView view2 = new ClientView(model, controller);
+//				view2.setVisible(true);
+			}
 		});
 
 	}

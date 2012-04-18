@@ -22,13 +22,13 @@ import client.ClientModel.UpdateReason;
 @SuppressWarnings("serial")
 public class ClientView extends JFrame implements Observer {
 
-	private JButton setupButton = new JButton("Setup");
-	private JButton playButton = new JButton("Play");
-	private JButton pauseButton = new JButton("Pause");
-	private JButton tearButton = new JButton("Teardown");
-	private JPanel mainPanel = new JPanel();
-	private JPanel buttonPanel = new JPanel();
-	private JLabel iconLabel = new JLabel();
+	private JButton setupButton;
+	private JButton playButton;
+	private JButton pauseButton;
+	private JButton tearButton;
+	private JPanel mainPanel;
+	private JPanel buttonPanel;
+	private JLabel iconLabel;
 	private Toolkit toolkit;
 	private ImageIcon icon;
 
@@ -39,7 +39,7 @@ public class ClientView extends JFrame implements Observer {
 		super("Client");
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.model = model;
-        this.model.addObserver(this);
+		this.model.addObserver(this);
 		this.controller = controller;
 		initisaliseComponents();
 		initialiseActionListeners();
@@ -49,6 +49,11 @@ public class ClientView extends JFrame implements Observer {
 		toolkit = Toolkit.getDefaultToolkit();
 
 		// Buttons
+		setupButton= new JButton("Setup");
+		playButton = new JButton("Play");
+		pauseButton = new JButton("Pause");
+		tearButton = new JButton("Teardown");
+		buttonPanel = new JPanel();
 		buttonPanel.setLayout(new GridLayout(1, 0));
 		buttonPanel.add(setupButton);
 		buttonPanel.add(playButton);
@@ -56,9 +61,11 @@ public class ClientView extends JFrame implements Observer {
 		buttonPanel.add(tearButton);
 
 		// Image display label
+		iconLabel = new JLabel();
 		iconLabel.setIcon(null);
 
 		// frame layout
+		mainPanel = new JPanel();
 		mainPanel.setLayout(null);
 		mainPanel.add(iconLabel);
 		mainPanel.add(buttonPanel);

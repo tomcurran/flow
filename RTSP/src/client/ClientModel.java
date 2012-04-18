@@ -47,8 +47,14 @@ public class ClientModel extends Observable {
 		return sequenceNumber;
 	}
 
-	public void setSequenceNumber(int i) {
-		sequenceNumber = i;
+	public void initSequenceNumber() {
+		sequenceNumber = 1;
+        this.setChanged();
+        this.notifyObservers(UpdateReason.SEQUENCE);
+	}
+
+	public void incrementSequenceNumber() {
+		sequenceNumber++;
         this.setChanged();
         this.notifyObservers(UpdateReason.SEQUENCE);
 	}
