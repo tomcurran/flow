@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<java version="1.6.0_29" class="java.beans.XMLDecoder"> 
+ <object class="com.horstmann.violet.ClassDiagramGraph"> 
+  <void method="addNode"> 
+   <object class="com.horstmann.violet.ClassNode"> 
+    <void property="bounds"> 
+     <object class="java.awt.geom.Rectangle2D$Double"> 
+      <void method="setRect"> 
+       <double>200.0</double> 
+       <double>140.0</double> 
+       <double>120.0</double> 
+       <double>60.0</double> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="attributes"> 
+     <void property="text"> 
+      <string>List &lt;Broadcast&gt;</string> 
+     </void> 
+    </void> 
+    <void property="methods"> 
+     <void property="text"> 
+      <string>refreshBroadcasts()</string> 
+     </void> 
+    </void> 
+    <void property="name"> 
+     <void property="text"> 
+      <string>Directory</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <void method="setLocation"> 
+     <double>200.0</double> 
+     <double>140.0</double> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object class="com.horstmann.violet.ClassNode"> 
+    <void property="bounds"> 
+     <object class="java.awt.geom.Rectangle2D$Double"> 
+      <void method="setRect"> 
+       <double>50.0</double> 
+       <double>140.0</double> 
+       <double>120.0</double> 
+       <double>120.0</double> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="attributes"> 
+     <void property="text"> 
+      <string>Broadcast </string> 
+     </void> 
+    </void> 
+    <void property="methods"> 
+     <void property="text"> 
+      <string>play(Broadcast b)
+stop()
+pause()
+seek(float [0..1])
+toggleAnnotation()</string> 
+     </void> 
+    </void> 
+    <void property="name"> 
+     <void property="text"> 
+      <string>Player</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <void method="setLocation"> 
+     <double>50.0</double> 
+     <double>140.0</double> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object class="com.horstmann.violet.ClassNode"> 
+    <void property="bounds"> 
+     <object class="java.awt.geom.Rectangle2D$Double"> 
+      <void method="setRect"> 
+       <double>540.0</double> 
+       <double>140.0</double> 
+       <double>160.0</double> 
+       <double>120.0</double> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="methods"> 
+     <void property="text"> 
+      <string>logConnectionEvent()
+logConnectionInfo()
+getGraphData()
+getConnectionSummary()</string> 
+     </void> 
+    </void> 
+    <void property="name"> 
+     <void property="text"> 
+      <string>Metrics</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <void method="setLocation"> 
+     <double>540.0</double> 
+     <double>140.0</double> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object class="com.horstmann.violet.ClassNode"> 
+    <void property="bounds"> 
+     <object class="java.awt.geom.Rectangle2D$Double"> 
+      <void method="setRect"> 
+       <double>350.0</double> 
+       <double>140.0</double> 
+       <double>160.0</double> 
+       <double>140.0</double> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="methods"> 
+     <void property="text"> 
+      <string>openConnectionToServer()
+closeConnections()
+getBroadcasts()
+startStream(fromTime)
+stopStream()
+pauseStream()</string> 
+     </void> 
+    </void> 
+    <void property="name"> 
+     <void property="text"> 
+      <string>ConnectionManager</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <void method="setLocation"> 
+     <double>350.0</double> 
+     <double>140.0</double> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object class="com.horstmann.violet.ClassNode"> 
+    <void property="bounds"> 
+     <object class="java.awt.geom.Rectangle2D$Double"> 
+      <void method="setRect"> 
+       <double>50.0</double> 
+       <double>450.0</double> 
+       <double>160.0</double> 
+       <double>100.0</double> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="methods"> 
+     <void property="text"> 
+      <string>listenForConnections()
+respondToRequests()
+sendStreams()</string> 
+     </void> 
+    </void> 
+    <void property="name"> 
+     <void property="text"> 
+      <string>ServerConnectionManager</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <void method="setLocation"> 
+     <double>50.0</double> 
+     <double>450.0</double> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object class="com.horstmann.violet.ClassNode"> 
+    <void property="bounds"> 
+     <object class="java.awt.geom.Rectangle2D$Double"> 
+      <void method="setRect"> 
+       <double>240.0</double> 
+       <double>450.0</double> 
+       <double>120.0</double> 
+       <double>80.0</double> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="attributes"> 
+     <void property="text"> 
+      <string>List&lt;Broadcast&gt;</string> 
+     </void> 
+    </void> 
+    <void property="methods"> 
+     <void property="text"> 
+      <string>addBroadcast()
+removeBroadcast()</string> 
+     </void> 
+    </void> 
+    <void property="name"> 
+     <void property="text"> 
+      <string>ServerDirectory</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <void method="setLocation"> 
+     <double>240.0</double> 
+     <double>450.0</double> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object class="com.horstmann.violet.ClassNode"> 
+    <void property="bounds"> 
+     <object class="java.awt.geom.Rectangle2D$Double"> 
+      <void method="setRect"> 
+       <double>390.0</double> 
+       <double>450.0</double> 
+       <double>120.0</double> 
+       <double>120.0</double> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="attributes"> 
+     <void property="text"> 
+      <string>String title
+Time runningTime
+String owner
+File file</string> 
+     </void> 
+    </void> 
+    <void property="name"> 
+     <void property="text"> 
+      <string>Broadcast</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <void method="setLocation"> 
+     <double>390.0</double> 
+     <double>450.0</double> 
+    </void> 
+   </object> 
+  </void> 
+  <void method="addNode"> 
+   <object class="com.horstmann.violet.ClassNode"> 
+    <void property="bounds"> 
+     <object class="java.awt.geom.Rectangle2D$Double"> 
+      <void method="setRect"> 
+       <double>540.0</double> 
+       <double>450.0</double> 
+       <double>100.0</double> 
+       <double>80.0</double> 
+      </void> 
+     </object> 
+    </void> 
+    <void property="methods"> 
+     <void property="text"> 
+      <string>save()
+load()</string> 
+     </void> 
+    </void> 
+    <void property="name"> 
+     <void property="text"> 
+      <string>FileManager</string> 
+     </void> 
+    </void> 
+   </object> 
+   <object class="java.awt.geom.Point2D$Double"> 
+    <void method="setLocation"> 
+     <double>540.0</double> 
+     <double>450.0</double> 
+    </void> 
+   </object> 
+  </void> 
+ </object> 
+</java> 
