@@ -1,3 +1,5 @@
+package shared;
+
 public class RTPpacket {
 
 	private static int HEADER_SIZE = 12; // size of the RTP header:
