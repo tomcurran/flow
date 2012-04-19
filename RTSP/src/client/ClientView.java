@@ -35,12 +35,12 @@ public class ClientView extends JFrame implements Observer {
 	private ClientController controller;
 	private ClientModel model;
 
-	public ClientView(ClientModel model, ClientController controller) {
+	public ClientView(ClientController controller) {
 		super("Client");
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.model = model;
-		this.model.addObserver(this);
 		this.controller = controller;
+		this.model = this.controller.getModel();
+		this.model.addObserver(this);
 		initisaliseComponents();
 		initialiseActionListeners();
 	}

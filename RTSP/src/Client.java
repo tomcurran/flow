@@ -31,6 +31,8 @@ import javax.swing.Timer;
 
 import shared.RTPpacket;
 
+
+
 public class Client {
 
 	private static final String USEAGE = "java Client [Server hostname] [Server RTSP listening port] [Video file requested]";

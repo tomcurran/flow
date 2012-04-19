@@ -3,6 +3,7 @@ package shared;
 public class RTPpacket {
 
 	private static int HEADER_SIZE = 12; // size of the RTP header:
+	public static int MJPEG_TYPE = 26; // RTP payload type for MJPEG video
 
 	// Fields that compose the RTP header
 	private int Version;

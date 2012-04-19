@@ -7,27 +7,34 @@ import java.net.SocketException;
 
 import shared.RTPpacket;
 
+
 public class RTPTransport {
 
-	private DatagramPacket rcvdp;			// UDP packet received from the server
-	private DatagramSocket rtpSocket;		// socket to be used to send and receive UDP packets
-	public static int RTP_RCV_PORT = 25000;	// port where the client will receive the RTP packets
-	private byte[] buf;						// buffer used to store data received from the server
+	public static int PORT = 25000;	// port where the client will receive the RTP packets
+
+	private DatagramSocket socket;	// socket to be used to send and receive UDP packets
+	private byte[] buffer;			// buffer used to store data received from the server
 
 	public RTPTransport() {
-		buf = new byte[15000];	// allocate enough memory for the buffer used to receive data from the server
+		buffer = new byte[15000];	// allocate enough memory for the buffer used to receive data from the server
 	}
 
 	public void setup() throws SocketException {
-		rtpSocket = new DatagramSocket(RTP_RCV_PORT);	// construct a new DatagramSocket to receive RTP packets from the server, on port RTP_RCV_PORT
-		rtpSocket.setSoTimeout(5);						// set TimeOut value of the socket to 5msec.
+		socket = new DatagramSocket(PORT);	// construct a new DatagramSocket to receive RTP packets from the server, on port RTP_RCV_PORT
+		socket.setSoTimeout(5);				// set TimeOut value of the socket to 5msec.
 	}
 
 	public RTPpacket receivePacket() throws IOException {
-		rcvdp = new DatagramPacket(buf, buf.length);							// Construct a DatagramPacket to receive data from the UDP socket
-		rtpSocket.receive(rcvdp);												// receive the DP from the socket
-		RTPpacket packet = new RTPpacket(rcvdp.getData(), rcvdp.getLength());	// create an RTPpacket object from the DP
-		return packet;
+		DatagramPacket dataPacket = new DatagramPacket(buffer, buffer.length);	// Construct a DatagramPacket to receive data from the UDP socket
+		socket.receive(dataPacket);												// receive the DP from the socket
+		RTPpacket rtpPacket = new RTPpacket(dataPacket.getData(), dataPacket.getLength());		// create an RTPpacket object from the DP
+
+		// print important header fields of the RTP packet received
+		System.out.printf("Got RTP packet with SeqNum #%d TimeStamp %d ms, of type %d\n",
+				rtpPacket.getSequenceNumber(), rtpPacket.getTimeStamp(), rtpPacket.getPayloadType());
+		rtpPacket.printheader();
+
+		return rtpPacket;
 	}
 
 }

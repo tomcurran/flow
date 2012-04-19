@@ -1,5 +1,6 @@
 package client;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -39,14 +40,20 @@ public class Driver {
 			System.exit(0);
 		}
 
-		final ClientModel model = new ClientModel(videoName);
-		final ClientController controller = new ClientController(model, serverIp, rtspServerPort);
+		ClientModel model = null;
+		try {
+			model = new ClientModel(videoName, serverIp, rtspServerPort);
+		} catch (IOException e) {
+			System.err.printf("I/O exception connecting to RTSP server: %s\n", e.getMessage());
+			System.exit(0);
+		}
+		final ClientController controller = new ClientController(model);
 
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				ClientView view = new ClientView(model, controller);
+				ClientView view = new ClientView(controller);
 				view.setVisible(true);
-//				ClientView view2 = new ClientView(model, controller);
+//				ClientView view2 = new ClientView(controller);
 //				view2.setVisible(true);
 			}
 		});
