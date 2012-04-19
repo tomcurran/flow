@@ -1,8 +1,13 @@
 package client;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.net.InetAddress;
 import java.util.Observable;
+
+import javax.swing.Timer;
 
 import shared.RTPpacket;
 
@@ -29,6 +34,7 @@ public class ClientModel extends Observable {
 	private byte[] frame;			// latest frame to be received
 	private RTPTransport rtpTransport;
 	private RTSPTransport rtspTransport;
+	private Timer timer; // timer used to receive data from the UDP socket
 
 	public ClientModel(String videoName, InetAddress serverIp, int serverPort) throws IOException {
 		this.videoName = videoName;
@@ -38,6 +44,9 @@ public class ClientModel extends Observable {
 		this.rtspTransport = new RTSPTransport(this, serverIp, serverPort);
 		this.rtspTransport.open();
 		this.setState(RTSP_STATE.INIT);
+		timer = new Timer(20, new TimerListener());
+		timer.setInitialDelay(0);
+		timer.setCoalesce(true);
 	}
 
 	public RTSP_STATE getState() {
@@ -125,6 +134,7 @@ public class ClientModel extends Observable {
 			if (responseCode == 200) {
 				// change RTSP state and print out new state
 				setState(ClientModel.RTSP_STATE.PLAYING);
+				timer.start();
 			}
 		}
 		return responseCode;
@@ -144,6 +154,7 @@ public class ClientModel extends Observable {
 			if (responseCode == 200) {
 				// change RTSP state and print out new state
 				setState(RTSP_STATE.READY);
+				timer.stop();
 			}
 		}
 		return responseCode;
@@ -162,6 +173,7 @@ public class ClientModel extends Observable {
 			// change RTSP state and print out new state
 			rtpTransport.close();
 			setState(ClientModel.RTSP_STATE.INIT);
+			timer.stop();
 		}
 		return responseCode;
 	}
@@ -176,6 +188,18 @@ public class ClientModel extends Observable {
 
 		this.setChanged();
 		this.notifyObservers(UpdateReason.FRAME);
+	}
+
+	private class TimerListener implements ActionListener {
+		public void actionPerformed(ActionEvent e) {
+			try {
+				receivePacket();
+			} catch (InterruptedIOException iioe) {
+//				System.out.println("Nothing to read");
+			} catch (IOException ioe) {
+				System.out.println("I/O exception receiving a RTSP packet: " + ioe.getMessage());
+			}
+		}
 	}
 
 }
