@@ -34,8 +34,9 @@ public class ClientModel extends Observable {
 		this.videoName = videoName;
 		this.sequenceNumber = 0;
 		this.sessionId = 0;
-		rtpTransport = new RTPTransport();
-		rtspTransport = new RTSPTransport(this, serverIp, serverPort);
+		this.rtpTransport = new RTPTransport();
+		this.rtspTransport = new RTSPTransport(this, serverIp, serverPort);
+		this.rtspTransport.open();
 		this.setState(RTSP_STATE.INIT);
 	}
 
@@ -46,8 +47,8 @@ public class ClientModel extends Observable {
 	public void setState(RTSP_STATE state) {
 		this.state = state;
 		System.out.printf("New client RTSP state: %s\n", state);
-        this.setChanged();
-        this.notifyObservers(UpdateReason.STATE);
+		this.setChanged();
+		this.notifyObservers(UpdateReason.STATE);
 	}
 
 	public int getSequenceNumber() {
@@ -56,14 +57,14 @@ public class ClientModel extends Observable {
 
 	public void initSequenceNumber() {
 		sequenceNumber = 1;
-        this.setChanged();
-        this.notifyObservers(UpdateReason.SEQUENCE);
+		this.setChanged();
+		this.notifyObservers(UpdateReason.SEQUENCE);
 	}
 
 	public void incrementSequenceNumber() {
 		sequenceNumber++;
-        this.setChanged();
-        this.notifyObservers(UpdateReason.SEQUENCE);
+		this.setChanged();
+		this.notifyObservers(UpdateReason.SEQUENCE);
 	}
 
 	public byte[] getFrame() {
@@ -76,8 +77,8 @@ public class ClientModel extends Observable {
 
 	public void setSessionId(int id) {
 		sessionId = id;
-        this.setChanged();
-        this.notifyObservers(UpdateReason.SESSION);
+		this.setChanged();
+		this.notifyObservers(UpdateReason.SESSION);
 	}
 
 	public String getVideoName() {
@@ -92,7 +93,7 @@ public class ClientModel extends Observable {
 		int responseCode = 0;
 		if (getState() == RTSP_STATE.INIT) {
 			// Init non-blocking RTPsocket that will be used to receive data
-			rtpTransport.setup();
+			rtpTransport.open();
 
 			// init RTSP sequence number
 			initSequenceNumber();
@@ -159,6 +160,7 @@ public class ClientModel extends Observable {
 		responseCode = rtspTransport.parseResponse();
 		if (responseCode == 200) {
 			// change RTSP state and print out new state
+			rtpTransport.close();
 			setState(ClientModel.RTSP_STATE.INIT);
 		}
 		return responseCode;
@@ -172,8 +174,8 @@ public class ClientModel extends Observable {
 		frame = new byte[payloadLength];
 		rtpPacket.getPayload(frame);
 
-        this.setChanged();
-        this.notifyObservers(UpdateReason.FRAME);
+		this.setChanged();
+		this.notifyObservers(UpdateReason.FRAME);
 	}
 
 }

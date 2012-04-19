@@ -14,26 +14,40 @@ import client.ClientModel.RTSP_STATE;
 public class RTSPTransport {
 
 	private Socket socket;
-	private static BufferedReader reader;
-	private static BufferedWriter writer;
+	private BufferedReader reader;
+	private BufferedWriter writer;
 	private final static String CRLF = "\r\n";
 
 	private ClientModel model;
+	private InetAddress ip;
+	private int port;
 
-	public RTSPTransport(ClientModel model, InetAddress ip, int port) throws IOException {
+	public RTSPTransport(ClientModel model, InetAddress ip, int port) {
 		this.model = model;
+		this.ip = ip;
+		this.port = port;
+	}
+
+	public void open() throws IOException {
 		socket = new Socket(ip, port);
 		reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 	}
 
+	public void close() throws IOException {
+		reader.close();
+		writer.close();
+		socket.close();
+	}
+
 	public int parseResponse() throws IOException {
 		int replyCode = 0;
-	
+
 		// parse status line and extract the replyCode
 		String statusLine = reader.readLine();
 		if (statusLine == null) {
-			return 0;
+			close();
+			return replyCode;
 		}
 		System.out.println("RTSP Client - Received from Server:");
 		System.out.println(statusLine);

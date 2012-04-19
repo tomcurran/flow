@@ -19,9 +19,13 @@ public class RTPTransport {
 		buffer = new byte[15000];	// allocate enough memory for the buffer used to receive data from the server
 	}
 
-	public void setup() throws SocketException {
+	public void open() throws SocketException {
 		socket = new DatagramSocket(PORT);	// construct a new DatagramSocket to receive RTP packets from the server, on port RTP_RCV_PORT
 		socket.setSoTimeout(5);				// set TimeOut value of the socket to 5msec.
+	}
+
+	public void close() {
+		socket.close();
 	}
 
 	public RTPpacket receivePacket() throws IOException {
