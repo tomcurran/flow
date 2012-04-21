@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import client.ClientModel.UpdateReason;
+import client.ClientModel.Update;
 
 
 @SuppressWarnings("serial")
@@ -115,8 +115,7 @@ public class ClientView extends JFrame implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		UpdateReason reason = (UpdateReason) arg;
-		switch (reason) {
+		switch ((Update) arg) {
 		case FRAME:
 			Image image = toolkit.createImage(model.getFrame(), 0, model.getFrameLength());
 			icon = new ImageIcon(image);

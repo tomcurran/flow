@@ -34,9 +34,9 @@ public class RTPTransport {
 		RTPpacket rtpPacket = new RTPpacket(dataPacket.getData(), dataPacket.getLength());		// create an RTPpacket object from the DP
 
 		// print important header fields of the RTP packet received
-		System.out.printf("Got RTP packet with SeqNum #%d TimeStamp %d ms, of type %d\n",
-				rtpPacket.getSequenceNumber(), rtpPacket.getTimeStamp(), rtpPacket.getPayloadType());
-		rtpPacket.printheader();
+//		System.out.printf("Got RTP packet with SeqNum #%d TimeStamp %d ms, of type %d\n",
+//				rtpPacket.getSequenceNumber(), rtpPacket.getTimeStamp(), rtpPacket.getPayloadType());
+//		rtpPacket.printheader();
 
 		return rtpPacket;
 	}

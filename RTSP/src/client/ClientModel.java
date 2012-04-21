@@ -1,19 +1,20 @@
 package client;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.InetAddress;
 import java.util.Observable;
-
-import javax.swing.Timer;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 
 import shared.RTPpacket;
 
 public class ClientModel extends Observable {
 
-	public enum UpdateReason {
+	public enum Update {
 		STATE,
 		SEQUENCE,
 		SESSION,
@@ -34,7 +35,14 @@ public class ClientModel extends Observable {
 	private byte[] frame;			// latest frame to be received
 	private RTPTransport rtpTransport;
 	private RTSPTransport rtspTransport;
-	private Timer timer; // timer used to receive data from the UDP socket
+
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+	private final Runnable play = new Runnable() {
+		public void run() {
+			receivePacket();
+		}
+	};
+	private ScheduledFuture<?> playHandle;
 
 	public ClientModel(String videoName, InetAddress serverIp, int serverPort) throws IOException {
 		this.videoName = videoName;
@@ -44,9 +52,76 @@ public class ClientModel extends Observable {
 		this.rtspTransport = new RTSPTransport(this, serverIp, serverPort);
 		this.rtspTransport.open();
 		this.setState(RTSP_STATE.INIT);
-		timer = new Timer(20, new TimerListener());
-		timer.setInitialDelay(0);
-		timer.setCoalesce(true);
+	}
+
+	public int setup() throws IOException {
+		int responseCode = 0;
+		if (getState() == RTSP_STATE.INIT) {
+			rtpTransport.open();
+			initSequenceNumber();
+			rtspTransport.sendRequest("SETUP");
+			responseCode = rtspTransport.parseResponse();
+			if (responseCode == 200) {
+				setState(ClientModel.RTSP_STATE.READY);
+			}
+		}
+		return responseCode;
+	}
+
+	public int play() throws IOException {
+		int responseCode = 0;
+		if (getState() == RTSP_STATE.READY) {
+			incrementSequenceNumber();
+			rtspTransport.sendRequest("PLAY");
+			responseCode = rtspTransport.parseResponse();
+			if (responseCode == 200) {
+				setState(ClientModel.RTSP_STATE.PLAYING);
+				playHandle = scheduler.scheduleAtFixedRate(play, 0, 20, MILLISECONDS);
+			}
+		}
+		return responseCode;
+	}
+
+	public int pause() throws IOException {
+		int responseCode = 0;
+		if (getState() == RTSP_STATE.PLAYING) {
+			incrementSequenceNumber();
+			rtspTransport.sendRequest("PAUSE");
+			responseCode = rtspTransport.parseResponse();
+			if (responseCode == 200) {
+				setState(RTSP_STATE.READY);
+				playHandle.cancel(false);
+			}
+		}
+		return responseCode;
+	}
+
+	public int tear() throws IOException {
+		int responseCode = 0;
+		incrementSequenceNumber();
+		rtspTransport.sendRequest("TEARDOWN");
+		responseCode = rtspTransport.parseResponse();
+		if (responseCode == 200) {
+			rtpTransport.close();
+			setState(ClientModel.RTSP_STATE.INIT);
+			playHandle.cancel(false);
+		}
+		return responseCode;
+	}
+
+	private void receivePacket() {
+		try {
+			RTPpacket rtpPacket = rtpTransport.receivePacket();
+			int payloadLength = rtpPacket.getPayloadLength();
+			frame = new byte[payloadLength];
+			rtpPacket.getPayload(frame);
+			this.setChanged();
+			this.notifyObservers(Update.FRAME);
+		} catch (InterruptedIOException iioe) {
+			// System.out.println("Nothing to read");
+		} catch (IOException ioe) {
+			System.out.println("I/O exception receiving a RTSP packet: " + ioe.getMessage());
+		}
 	}
 
 	public RTSP_STATE getState() {
@@ -57,7 +132,7 @@ public class ClientModel extends Observable {
 		this.state = state;
 		System.out.printf("New client RTSP state: %s\n", state);
 		this.setChanged();
-		this.notifyObservers(UpdateReason.STATE);
+		this.notifyObservers(Update.STATE);
 	}
 
 	public int getSequenceNumber() {
@@ -67,13 +142,13 @@ public class ClientModel extends Observable {
 	public void initSequenceNumber() {
 		sequenceNumber = 1;
 		this.setChanged();
-		this.notifyObservers(UpdateReason.SEQUENCE);
+		this.notifyObservers(Update.SEQUENCE);
 	}
 
 	public void incrementSequenceNumber() {
 		sequenceNumber++;
 		this.setChanged();
-		this.notifyObservers(UpdateReason.SEQUENCE);
+		this.notifyObservers(Update.SEQUENCE);
 	}
 
 	public byte[] getFrame() {
@@ -87,7 +162,7 @@ public class ClientModel extends Observable {
 	public void setSessionId(int id) {
 		sessionId = id;
 		this.setChanged();
-		this.notifyObservers(UpdateReason.SESSION);
+		this.notifyObservers(Update.SESSION);
 	}
 
 	public String getVideoName() {
@@ -96,110 +171,6 @@ public class ClientModel extends Observable {
 
 	public int getSessionId() {
 		return sessionId;
-	}
-
-	public int setup() throws IOException {
-		int responseCode = 0;
-		if (getState() == RTSP_STATE.INIT) {
-			// Init non-blocking RTPsocket that will be used to receive data
-			rtpTransport.open();
-
-			// init RTSP sequence number
-			initSequenceNumber();
-
-			// Send SETUP message to the server
-			rtspTransport.sendRequest("SETUP");
-
-			// Wait for the response
-			responseCode = rtspTransport.parseResponse();
-			if (responseCode == 200) {
-				// change RTSP state and print new state
-				setState(ClientModel.RTSP_STATE.READY);
-			}
-		}
-		return responseCode;
-	}
-
-	public int play() throws IOException {
-		int responseCode = 0;
-		if (getState() == RTSP_STATE.READY) {
-			// increase RTSP sequence number
-			incrementSequenceNumber();
-
-			// Send PLAY message to the server
-			rtspTransport.sendRequest("PLAY");
-
-			// Wait for the response
-			responseCode = rtspTransport.parseResponse();
-			if (responseCode == 200) {
-				// change RTSP state and print out new state
-				setState(ClientModel.RTSP_STATE.PLAYING);
-				timer.start();
-			}
-		}
-		return responseCode;
-	}
-
-	public int pause() throws IOException {
-		int responseCode = 0;
-		if (getState() == RTSP_STATE.PLAYING) {
-			// increase RTSP sequence number
-			incrementSequenceNumber();
-
-			// Send PAUSE message to the server
-			rtspTransport.sendRequest("PAUSE");
-
-			// Wait for the response
-			responseCode = rtspTransport.parseResponse();
-			if (responseCode == 200) {
-				// change RTSP state and print out new state
-				setState(RTSP_STATE.READY);
-				timer.stop();
-			}
-		}
-		return responseCode;
-	}
-
-	public int tear() throws IOException {
-		int responseCode = 0;
-		incrementSequenceNumber();
-
-		// Send TEARDOWN message to the server
-		rtspTransport.sendRequest("TEARDOWN");
-
-		// Wait for the response
-		responseCode = rtspTransport.parseResponse();
-		if (responseCode == 200) {
-			// change RTSP state and print out new state
-			rtpTransport.close();
-			setState(ClientModel.RTSP_STATE.INIT);
-			timer.stop();
-		}
-		return responseCode;
-	}
-
-	public void receivePacket() throws IOException {
-		RTPpacket rtpPacket = rtpTransport.receivePacket();
-
-		// get the payload bitstream from the RTPpacket object
-		int payloadLength = rtpPacket.getPayloadLength();
-		frame = new byte[payloadLength];
-		rtpPacket.getPayload(frame);
-
-		this.setChanged();
-		this.notifyObservers(UpdateReason.FRAME);
-	}
-
-	private class TimerListener implements ActionListener {
-		public void actionPerformed(ActionEvent e) {
-			try {
-				receivePacket();
-			} catch (InterruptedIOException iioe) {
-//				System.out.println("Nothing to read");
-			} catch (IOException ioe) {
-				System.out.println("I/O exception receiving a RTSP packet: " + ioe.getMessage());
-			}
-		}
 	}
 
 }

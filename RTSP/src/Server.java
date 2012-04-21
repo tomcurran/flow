@@ -122,7 +122,7 @@ public class Server extends JFrame implements ActionListener {
 
 				// System.out.println("Send frame #" + imagenb);
 				// print the header bitstream
-				rtpPacket.printheader();
+//				rtpPacket.printheader();
 
 				// update GUI
 				label.setText("Send frame #" + imagenb);
