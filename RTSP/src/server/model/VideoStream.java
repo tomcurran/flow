@@ -1,4 +1,4 @@
-package shared;
+package server.model;
 
 
 import java.io.FileInputStream;

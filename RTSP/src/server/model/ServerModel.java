@@ -1,8 +1,5 @@
 package server.model;
 
-import shared.RTPpacket;
-import shared.VideoStream;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -20,6 +17,8 @@ import java.util.Observable;
 import java.util.StringTokenizer;
 
 import javax.swing.Timer;
+
+import shared.RTPpacket;
 
 
 	/**
