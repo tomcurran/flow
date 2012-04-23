@@ -1,4 +1,4 @@
-package client;
+package client.model;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 

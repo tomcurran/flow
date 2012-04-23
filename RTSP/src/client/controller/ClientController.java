@@ -1,7 +1,9 @@
-package client;
+package client.controller;
 
 import java.io.IOException;
 import java.net.SocketException;
+
+import client.model.ClientModel;
 
 public class ClientController {
 
