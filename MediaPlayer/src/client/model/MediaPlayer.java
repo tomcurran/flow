@@ -15,8 +15,6 @@ import java.util.concurrent.ScheduledFuture;
 
 import javax.swing.ImageIcon;
 
-import client.ClientModel;
-
 public class MediaPlayer extends Observable implements Observer {
 
 	public static final int FRAMES_SEC = 30;
