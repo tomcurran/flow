@@ -18,9 +18,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.Timer;
 
-
+import server.model.VideoStream;
 import shared.RTPpacket;
-import shared.VideoStream;
 
 @SuppressWarnings("serial")
 public class Server extends JFrame implements ActionListener {
