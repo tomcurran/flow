@@ -48,6 +48,8 @@ public class MediaPlayer extends Observable implements Observer {
 		}
 	};
 
+	private static final int FRAMES = 500;
+
 	public MediaPlayer(String videoName, InetAddress serverIp, int rtspServerPort) throws IOException {
 		state = STATE.STOP;
 		currentFrame = 0;
@@ -78,7 +80,7 @@ public class MediaPlayer extends Observable implements Observer {
 			setState(STATE.BUFFER);
 			break;
 		case PAUSE:
-			if (bufferedEnough()) {
+			if (bufferLowerBound()) {
 				startPlaying();
 			} else {
 				setState(STATE.BUFFER);
@@ -117,10 +119,12 @@ public class MediaPlayer extends Observable implements Observer {
 		}
 	}
 
-	private boolean bufferedEnough() {
-		int bufSize = buffer.size();
-//		return bufSize > 100 && (double)(bufSize - currentFrame) / bufSize > 0.7;
-		return (bufSize - currentFrame) > 150;
+	private boolean bufferUpperBound() {
+		return (double)(buffer.size() - currentFrame) / FRAMES > 0.3;
+	}
+
+	private boolean bufferLowerBound() {
+		return (double)(buffer.size() - currentFrame) / FRAMES < 0.1;
 	}
 
 	@Override
@@ -133,13 +137,13 @@ public class MediaPlayer extends Observable implements Observer {
 			case PAUSE:
 				break;
 			case PLAY:
-				if (!bufferedEnough()) {
+				if (bufferLowerBound()) {
 					stopPlaying();
 					setState(STATE.BUFFER);
 				}
 				break;
 			case BUFFER:
-				if (bufferedEnough()) {
+				if (bufferUpperBound()) {
 					startPlaying();
 				}
 				break;
