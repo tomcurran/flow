@@ -32,7 +32,7 @@ public class ClientModel extends Observable {
 	private int sequenceNumber;		// Sequence number of RTSP messages within the session
 	private int sessionId;			// ID of the RTSP session (given by the RTSP Server)
 	private String videoName;		// video file name
-	private byte[] frame;			// latest frame to be received
+	private RTPpacket packet;		// latest packet to be received
 	private RTPTransport rtpTransport;
 	private RTSPTransport rtspTransport;
 
@@ -48,6 +48,7 @@ public class ClientModel extends Observable {
 		this.videoName = videoName;
 		this.sequenceNumber = 0;
 		this.sessionId = 0;
+		this.packet = null;
 		this.rtpTransport = new RTPTransport();
 		this.rtspTransport = new RTSPTransport(this, serverIp, serverPort);
 		this.rtspTransport.open();
@@ -111,16 +112,13 @@ public class ClientModel extends Observable {
 
 	private void receivePacket() {
 		try {
-			RTPpacket rtpPacket = rtpTransport.receivePacket();
-			int payloadLength = rtpPacket.getPayloadLength();
-			frame = new byte[payloadLength];
-			rtpPacket.getPayload(frame);
+			this.packet = rtpTransport.receivePacket();
 			this.setChanged();
 			this.notifyObservers(Update.FRAME);
 		} catch (InterruptedIOException iioe) {
 			// System.out.println("Nothing to read");
 		} catch (IOException ioe) {
-			System.out.println("I/O exception receiving a RTSP packet: " + ioe.getMessage());
+			System.out.println("I/O exception receiving a RTP packet: " + ioe.getMessage());
 		}
 	}
 
@@ -152,11 +150,23 @@ public class ClientModel extends Observable {
 	}
 
 	public byte[] getFrame() {
+		if (packet == null) {
+			return new byte[0];
+		}
+		byte[] frame = new byte[packet.getPayloadLength()];
+		packet.getPayload(frame);
 		return frame;
 	}
 
 	public int getFrameLength() {
-		return frame != null ? frame.length : 0;
+		if (packet == null) {
+			return 0;
+		}
+		return packet.getPayloadLength();
+	}
+
+	public RTPpacket getPacket() {
+		return packet;
 	}
 
 	public void setSessionId(int id) {
