@@ -2,7 +2,6 @@ package client.model;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-import java.awt.Toolkit;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -13,11 +12,9 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
-import javax.swing.ImageIcon;
+import shared.RTPpacket;
 
 public class MediaPlayer extends Observable implements Observer {
-
-	public static final int FRAMES_SEC = 30;
 
 	public enum STATE {
 		STOP,
@@ -32,11 +29,11 @@ public class MediaPlayer extends Observable implements Observer {
 	}
 
 	private STATE state;
-	private List<ImageIcon> buffer;
+	private List<RTPpacket> buffer;
 	private int currentFrame;
-	private Toolkit toolkit;
 	private ClientModel rtspClient;
 	private int playRate;
+	private int videoLength;
 
 	private ScheduledExecutorService scheduler;
 	private ScheduledFuture<?> playHandle;
@@ -46,14 +43,12 @@ public class MediaPlayer extends Observable implements Observer {
 		}
 	};
 
-	private static final int FRAMES = 500;
-
 	public MediaPlayer(String videoName, InetAddress serverIp, int rtspServerPort) throws IOException {
 		state = STATE.STOP;
 		currentFrame = 0;
-		toolkit = Toolkit.getDefaultToolkit();
-		buffer = new ArrayList<ImageIcon>();
-		playRate = 1000 / FRAMES_SEC;
+		buffer = new ArrayList<RTPpacket>();
+		videoLength = 500;
+		playRate = 1000 / 20;
 		playHandle = null;
 		scheduler = Executors.newScheduledThreadPool(1);
 		rtspClient = new ClientModel(videoName, serverIp, rtspServerPort);
@@ -68,6 +63,28 @@ public class MediaPlayer extends Observable implements Observer {
 		this.state = state;
 		this.setChanged();
 		this.notifyObservers(Update.STATE);
+	}
+
+	public byte[] getFrame() {
+		RTPpacket packet = buffer.get(currentFrame);
+		if (packet == null) {
+			return new byte[0];
+		}
+		byte[] frame = new byte[packet.getPayloadLength()];
+		packet.getPayload(frame);
+		return frame;
+	}
+
+	public int getFrameLength() {
+		RTPpacket packet = buffer.get(currentFrame);
+		if (packet == null) {
+			return 0;
+		}
+		return packet.getPayloadLength();
+	}
+
+	public RTPpacket getPacket() {
+		return buffer.get(currentFrame);
 	}
 
 	public void play() throws IOException {
@@ -106,30 +123,11 @@ public class MediaPlayer extends Observable implements Observer {
 		}
 	}
 
-	private void startPlaying() {
-		playHandle = scheduler.scheduleAtFixedRate(play, 0, playRate, MILLISECONDS);
-		setState(STATE.PLAY);
-	}
-
-	private void stopPlaying() {
-		if (playHandle != null) {
-			playHandle.cancel(true);
-		}
-	}
-
-	private boolean bufferUpperBound() {
-		return (double)(buffer.size() - currentFrame) / FRAMES > 0.3;
-	}
-
-	private boolean bufferLowerBound() {
-		return (double)(buffer.size() - currentFrame) / FRAMES < 0.1;
-	}
-
 	@Override
 	public void update(Observable o, Object arg) {
 		switch ((ClientModel.Update) arg) {
 		case FRAME:
-			buffer.add(new ImageIcon(toolkit.createImage(rtspClient.getFrame(), 0, rtspClient.getFrameLength())));
+			buffer.add(rtspClient.getPacket());
 			switch (getState()) {
 			case STOP:
 			case PAUSE:
@@ -150,16 +148,32 @@ public class MediaPlayer extends Observable implements Observer {
 		}
 	}
 
-	public ImageIcon getFrame() {
-		return buffer.get(currentFrame);
-	}
-
 	private void nextFrame() {
 		if (currentFrame < buffer.size()) {
 			currentFrame++;
 			this.setChanged();
 			this.notifyObservers(Update.FRAME);
 		}
+	}
+
+	private void startPlaying() {
+		playHandle = scheduler.scheduleAtFixedRate(play, 0, playRate, MILLISECONDS);
+		setState(STATE.PLAY);
+	}
+
+	private void stopPlaying() {
+		if (playHandle != null) {
+			playHandle.cancel(true);
+		}
+	}
+
+	private boolean bufferUpperBound() {
+		int bufSize = buffer.size();
+		return bufSize == videoLength || (double)(buffer.size() - currentFrame) / videoLength > 0.2;
+	}
+
+	private boolean bufferLowerBound() {
+		return (double)(buffer.size() - currentFrame) / videoLength < 0.05;
 	}
 
 }
