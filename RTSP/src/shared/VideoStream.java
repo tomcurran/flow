@@ -1,7 +1,6 @@
 package shared;
 
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -10,8 +9,7 @@ public class VideoStream {
 	private FileInputStream fis;
 
 	public VideoStream(String filename) throws Exception {
-		fis = new FileInputStream("videos"+"/"+filename);
-		//fis = new FileInputStream(".."+File.pathSeparator+"videos"+File.pathSeparator+filename);
+		fis = new FileInputStream("." + System.getProperty("path.separator") + "videos" + System.getProperty("path.separator") + filename);
 	}
 
 	/**
