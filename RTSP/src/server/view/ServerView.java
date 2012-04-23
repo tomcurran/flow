@@ -30,6 +30,7 @@ public class ServerView extends JFrame implements Observer{
 	// Constructor
 	public ServerView (ServerModel model) {
 		controller = new ServerController(model);
+		model.addObserver(this);
 		this.addWindowListener(new ServerWindowListener(model));
 
 		//showView();

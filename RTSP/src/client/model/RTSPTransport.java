@@ -1,4 +1,4 @@
-package client;
+package client.model;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,7 +9,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.util.StringTokenizer;
 
-import client.ClientModel.RTSP_STATE;
+import client.model.ClientModel.RTSP_STATE;
 
 public class RTSPTransport {
 
