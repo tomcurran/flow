@@ -1,18 +1,16 @@
-package server.view;
+package server.rtsp.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import server.controller.ServerController;
-import server.controller.ServerWindowListener;
-import server.model.ServerModel;
+import server.rtsp.controller.ServerController;
+import server.rtsp.controller.ServerWindowListener;
+import server.rtsp.model.ServerModel;
 
 	/**
 	 * @author jwb09119

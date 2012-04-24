@@ -29,8 +29,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import shared.RTPpacket;
-
 
 
 public class Client {

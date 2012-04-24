@@ -1,5 +1,3 @@
-package server.model;
-
 
 import java.io.FileInputStream;
 import java.io.IOException;

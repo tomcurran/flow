@@ -1,4 +1,4 @@
-package server.model;
+package server.rtsp.model;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,8 +17,6 @@ import java.util.Observable;
 import java.util.StringTokenizer;
 
 import javax.swing.Timer;
-
-import shared.RTPpacket;
 
 
 	/**

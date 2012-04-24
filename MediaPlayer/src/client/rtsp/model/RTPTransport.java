@@ -5,7 +5,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-import shared.RTPpacket;
+import server.rtsp.model.RTPpacket;
 
 
 public class RTPTransport {

@@ -1,9 +1,9 @@
-package server.controller;
+package server.rtsp.controller;
 
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import server.model.ServerModel;
+import server.rtsp.model.ServerModel;
 
 public class ServerWindowListener implements WindowListener {
 	ServerModel model;

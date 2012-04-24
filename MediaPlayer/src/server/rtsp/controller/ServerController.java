@@ -1,9 +1,9 @@
-package server.controller;
+package server.rtsp.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import server.model.ServerModel;
+import server.rtsp.model.ServerModel;
 
 	/**
 	 * @author jwb09119

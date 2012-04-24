@@ -1,7 +1,7 @@
-package server;
+package server.rtsp;
 
-import server.model.ServerModel;
-import server.view.ServerView;
+import server.rtsp.model.ServerModel;
+import server.rtsp.view.ServerView;
 
 	/**
 	 * @author jwb09119
