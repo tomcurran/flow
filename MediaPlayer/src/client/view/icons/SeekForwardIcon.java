@@ -14,12 +14,12 @@ public class SeekForwardIcon implements Icon {
 
 	@Override
 	public int getIconHeight() {
-		return 5;
+		return 20;
 	}
 
 	@Override
 	public int getIconWidth() {
-		return 26;
+		return 2;
 	}
 
 	@Override

@@ -26,8 +26,8 @@ public class PlayIcon implements Icon {
 	public void paintIcon(Component c, Graphics g, int x, int y) {
 		//Points for the triangle that makes up the play button. 
 		Point p1 = new Point(5, 5);
-        Point p2 = new Point(5, 26);
-        Point p3 = new Point(26, 13);
+        Point p2 = new Point(5, 25);
+        Point p3 = new Point(25, 15);
 		
         //Turns on antialiasing, making the appearance cleaner. 
 		((Graphics2D) g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
