@@ -1,34 +1,37 @@
 package client.view;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import client.controller.MediaController;
 import client.model.MediaPlayer.Update;
-import client.view.icons.*;
+import client.view.icons.StatisticsIcon;
 
 @SuppressWarnings("serial")
 public class ButtonView extends JPanel implements Observer {
-	
+
 	private JButton playpauseButton;
 	private JButton stopButton;
 	private JButton seekbackButton;
 	private JButton seekforwardButton;
 	private JButton statsButton;
-
-	private MediaController controller;
-	
 	private JPanel buttons;
-    private ButtonGroup bg; 
+    private ButtonGroup bg;
+	private ImageIcon playIcon;
+	private ImageIcon pauseIcon;
+	private ImageIcon stopIcon;
+	private ImageIcon rewindIcon;
+	private ImageIcon fastForwardIcon;
+	private ImageIcon statsIcon;
+	private MediaController controller;
 
 	public ButtonView(MediaController controller) {
 		this.controller = controller;
@@ -43,24 +46,29 @@ public class ButtonView extends JPanel implements Observer {
         buttons = new JPanel();
         buttons.setPreferredSize(new Dimension(400, 40));
         
-		
-		playpauseButton = new JButton(new PlayIcon());
+        playIcon = new ImageIcon("images/icons/play.png");
+        pauseIcon = new ImageIcon("images/icons/pause.png");
+		playpauseButton = new JButton(playIcon);
 		playpauseButton.setPreferredSize(new Dimension(30, 30));
 		playpauseButton.setActionCommand("PLAY");
-		
-		stopButton = new JButton(new StopIcon());
+
+        stopIcon = new ImageIcon("images/icons/stop.png");
+		stopButton = new JButton(stopIcon);
 		stopButton.setPreferredSize(new Dimension(30, 30));
 		stopButton.setActionCommand("STOP");
-		
-		seekbackButton = new JButton(new SeekBackIcon());
+
+        rewindIcon = new ImageIcon("images/icons/rewind.png");
+		seekbackButton = new JButton(rewindIcon);
 		seekbackButton.setPreferredSize(new Dimension(30, 30));
 		seekbackButton.setActionCommand("BACKSEEK");
-		
-		seekforwardButton = new JButton(new SeekForwardIcon());
+
+        fastForwardIcon = new ImageIcon("images/icons/forward.png");
+		seekforwardButton = new JButton(fastForwardIcon);
 		seekforwardButton.setPreferredSize(new Dimension(30, 30));
 		seekforwardButton.setActionCommand("FORWARDSEEK");
-		
-		statsButton = new JButton(new StatisticsIcon());
+
+        statsIcon = new ImageIcon("images/icons/fishes.png");
+		statsButton = new JButton(statsIcon);
 		statsButton.setPreferredSize(new Dimension(30, 30));
 		statsButton.setActionCommand("STATS");
 		
@@ -98,13 +106,13 @@ public class ButtonView extends JPanel implements Observer {
 		switch (this.controller.getModel().getState()) {
 		case STOP:
 		case PAUSE:
-			playpauseButton.setIcon(new PlayIcon());
+			playpauseButton.setIcon(playIcon);
 			playpauseButton.setActionCommand("PLAY");
 			System.out.println("switched to play");
 			break;
 		case BUFFER:
 		case PLAY:
-			playpauseButton.setIcon(new PauseIcon());
+			playpauseButton.setIcon(pauseIcon);
 			playpauseButton.setActionCommand("PAUSE");
 			System.out.println("switched to pause");
 			break;
