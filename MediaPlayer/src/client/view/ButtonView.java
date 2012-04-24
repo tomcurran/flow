@@ -95,7 +95,6 @@ public class ButtonView extends JPanel implements Observer {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				controller.playpause(playpauseButton.getActionCommand());
-				System.out.println("command: " + playpauseButton.getActionCommand());
 			}
 		});
 
@@ -107,13 +106,11 @@ public class ButtonView extends JPanel implements Observer {
 		case PAUSE:
 			playpauseButton.setIcon(playIcon);
 			playpauseButton.setActionCommand("PLAY");
-			System.out.println("switched to play");
 			break;
 		case BUFFER:
 		case PLAY:
 			playpauseButton.setIcon(pauseIcon);
-			playpauseButton.setActionCommand("PAUSE");
-			System.out.println("switched to pause");
+			playpauseButton.setActionCommand("PAUSE");;
 			break;
 		default:
 			break;
@@ -122,7 +119,6 @@ public class ButtonView extends JPanel implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
-		System.out.println("Arg: " +arg);
 		switch ((Update) arg) {
 		case STATE:
 			updateGUI();

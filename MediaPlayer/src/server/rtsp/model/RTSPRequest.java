@@ -2,6 +2,7 @@ package server.rtsp.model;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
@@ -69,92 +70,68 @@ public class RTSPRequest extends Observable implements ActionListener, Runnable 
 
 	private void doServerWait() {
 		try {
-	
-			// Get Client IP address
 			rtpTransport.setClientIp(rtspTransport.getClientIp());
-		
-			// Initiate RTSPstate
-			setState(RTSP_STATES.READY);
-		
-			// Set input and output stream filters:
 			rtspTransport.open();
-			
-		} catch (IOException ioex) {
-			System.err.println("Error on socket (Port: "+rtspTransport.getClientPort()+") at ServerModel initialisation");
-			System.err.println(ioex.getMessage());
-			System.exit(1);
+			setState(RTSP_STATES.INIT);
+		} catch (IOException e) {
+			RTSPServer.log("I/O exception opening RTSP socket\n");
+			return;
 		}
-		
+
 		// Wait for the SETUP message from the client
 		RTSP_METHODS request;
 		boolean done = false;
 		while (!done) {
 			request = rtspTransport.parseRequest(); // blocking
-
 			if (request == RTSP_METHODS.SETUP) {
 				done = true;
-
-				// update RTSP state
 				setState(RTSP_STATES.READY);
-
-				// Send response
 				rtspTransport.sendResponse();
-
-				// init the VideoStream object:
 				try {
 					video = new VideoStream(videoName);
-				} catch (Exception e1) {
-					System.err.println("Problem creating video stream");
-					System.err.println(e1.getMessage());
-					e1.printStackTrace();
-				}
-
-				// init RTP socket
-				try {
 					RTPTransport.open();
 				} catch (SocketException e) {
-					System.err.println("Problem creating RTP socket");
-					System.exit(1);
+					RTSPServer.log("socket exception creating RTP socket: %s\n", e.getMessage());
+					return;
+				} catch (FileNotFoundException e) {
+					RTSPServer.log("video file not found: %s\n", e.getMessage());
+					return;
 				}
 			}
 		}
 
 		// loop to handle RTSP requests
 		while (true) {
-			// parse the request
 			request = rtspTransport.parseRequest(); // blocking
 
 			if ((request == RTSP_METHODS.PLAY) && (getState() == RTSP_STATES.READY)) {
-				// send back response
 				rtspTransport.sendResponse();
-				// start timer
 				timer.start();
-				// update state
 				setState(RTSP_STATES.PLAYING);
 			} else if ((request == RTSP_METHODS.PAUSE) && (getState() == RTSP_STATES.PLAYING)) {
-				// send back response
 				rtspTransport.sendResponse();
-				// stop timer
 				timer.stop();
-				// update state
 				setState(RTSP_STATES.READY);
 			} else if (request == RTSP_METHODS.TEARDOWN) {
-				// send back response
 				rtspTransport.sendResponse();
-				// stop timer
 				timer.stop();
-				// close sockets
 				try {
 					rtspTransport.close();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					System.err.println("Problem closing RTSP socket (Port: "+rtspTransport.getClientPort()+")");
-					System.exit(1);
+					RTSPServer.log("I/O exception closing RTSP socket: %s\n", e.getMessage());
 				}
 				RTPTransport.close();
-
-				System.exit(0);
+				return;
+			} else if (request == RTSP_METHODS.NONE) {
+				timer.stop();
+				try {
+					rtspTransport.close();
+				} catch (IOException e) {
+					RTSPServer.log("I/O exception closing RTSP socket: %s\n", e.getMessage());
+				}
+				RTPTransport.close();
+				RTSPServer.log("client disconnected\n");
+				return;
 			}
 		}
 	}
@@ -188,9 +165,9 @@ public class RTSPRequest extends Observable implements ActionListener, Runnable 
 				// update GUI
 				this.setChanged();
 				this.notifyObservers(Update.FRAME);
-			} catch (Exception ex) {
-				System.out.println("Exception caught: " + ex);
-				System.exit(0);
+			} catch (IOException ex) {
+				RTSPServer.log("I/O exception sending RTSP packet: %s\n", ex.getMessage());
+				return;
 			}
 		} else {
 			// if we have reached the end of the video file, stop the timer
@@ -237,7 +214,7 @@ public class RTSPRequest extends Observable implements ActionListener, Runnable 
 
 	public void setState(RTSP_STATES state) {
 		this.state = state;
-		System.out.println("New RTSP state: " + state);
+		RTSPServer.log("new state %s (%d)\n", state, getSessionId());
 		this.setChanged();
 		this.notifyObservers(Update.STATE);
 	}

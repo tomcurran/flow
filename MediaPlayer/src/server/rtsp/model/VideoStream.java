@@ -2,13 +2,14 @@ package server.rtsp.model;
 
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class VideoStream {
 
 	private FileInputStream fis;
 
-	public VideoStream(String filename) throws Exception {
+	public VideoStream(String filename) throws FileNotFoundException {
 		fis = new FileInputStream("." + System.getProperty("file.separator") + "public" + System.getProperty("file.separator") + "videos" + System.getProperty("file.separator") + filename);
 	}
 

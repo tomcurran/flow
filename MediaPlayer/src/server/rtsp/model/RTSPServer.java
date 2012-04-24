@@ -24,7 +24,7 @@ public class RTSPServer implements Runnable {
 			}
 		} catch (IOException e) {
 			pool.shutdown();
-			RTSPServer.log("Could not accept client on port %d\n", socket.getLocalPort());
+			RTSPServer.log("could not accept client on port %d\n", socket.getLocalPort());
 		}
 	}
 

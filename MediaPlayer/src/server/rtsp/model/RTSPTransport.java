@@ -48,11 +48,10 @@ public class RTSPTransport {
 			// parse request line and extract the request_type:
 			String requestLine = rtspReader.readLine();
 			if (requestLine == null) {
-				System.out.println("Client ended unexpectedly, forcing teardown.");
-				return RTSP_METHODS.TEARDOWN;
+				return request;
 			}
-			System.out.println("RTSP Server - Received from Client:");
-			System.out.println(requestLine);
+			RTSPServer.log("received from client... \n");
+			RTSPServer.log("%s\n", requestLine);
 
 			StringTokenizer tokens = new StringTokenizer(requestLine);
 			String requestTypeString = new String(tokens.nextToken());
@@ -75,14 +74,14 @@ public class RTSPTransport {
 
 			// parse the seqNumLine and extract CSeq field
 			String seqNumLine = rtspReader.readLine();
-			System.out.println(seqNumLine);
+			RTSPServer.log("%s\n", seqNumLine);
 			tokens = new StringTokenizer(seqNumLine);
 			tokens.nextToken();
 			model.setSequenceNumber(Integer.parseInt(tokens.nextToken()));
 
 			// get lastLine
 			String lastLine = rtspReader.readLine();
-			System.out.println(lastLine);
+			RTSPServer.log("%s\n", lastLine);
 
 			if (request == RTSP_METHODS.SETUP) {
 				// extract rtpDestPort from lastLine
@@ -93,10 +92,9 @@ public class RTSPTransport {
 				model.setClientPort(Integer.parseInt(tokens.nextToken()));
 			}
 			// else lastLine will be the SessionId line ... do not check for now.
-		} catch (Exception ex) {
-			System.out.println("Exception caught: " + ex);
-			ex.printStackTrace();
-			System.exit(0);
+		} catch (IOException e) {
+			RTSPServer.log("I/O exception parsing RTSP request: %s\n", e.getMessage());
+			request = RTSP_METHODS.NONE;
 		}
 		return request;
 	}
@@ -107,11 +105,9 @@ public class RTSPTransport {
 			rtspWriter.write("CSeq: " + model.getSquenceNumber() + CRLF);
 			rtspWriter.write("Session: " + model.getSessionId() + CRLF);
 			rtspWriter.flush();
-			// System.out.println("RTSP Server - Sent response to Client.");
-		} catch (Exception ex) {
-			System.out.println("Exception caught: " + ex);
-			ex.printStackTrace();
-			System.exit(0);
+			RTSPServer.log("sending response to client\n");
+		} catch (IOException e) {
+			RTSPServer.log("I/O exception sending RTSP response: %s\n", e.getMessage());
 		}
 	}
 
