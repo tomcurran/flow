@@ -1,4 +1,4 @@
-package client.model;
+package client.rtsp.model;
 
 import java.io.IOException;
 import java.net.DatagramPacket;

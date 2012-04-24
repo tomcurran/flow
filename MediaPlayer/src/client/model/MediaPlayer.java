@@ -13,6 +13,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
 import shared.RTPpacket;
+import client.rtsp.model.ClientModel;
 
 public class MediaPlayer extends Observable implements Observer {
 

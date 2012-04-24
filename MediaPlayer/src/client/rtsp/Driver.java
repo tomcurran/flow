@@ -1,4 +1,4 @@
-package client;
+package client.rtsp;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -6,9 +6,9 @@ import java.net.UnknownHostException;
 
 import javax.swing.SwingUtilities;
 
-import client.controller.ClientController;
-import client.model.ClientModel;
-import client.view.ClientView;
+import client.rtsp.controller.ClientController;
+import client.rtsp.model.ClientModel;
+import client.rtsp.view.ClientView;
 
 
 public class Driver {

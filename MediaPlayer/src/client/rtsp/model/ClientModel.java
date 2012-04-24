@@ -1,4 +1,4 @@
-package client.model;
+package client.rtsp.model;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 

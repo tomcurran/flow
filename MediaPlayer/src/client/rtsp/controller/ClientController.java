@@ -1,9 +1,9 @@
-package client.controller;
+package client.rtsp.controller;
 
 import java.io.IOException;
 import java.net.SocketException;
 
-import client.model.ClientModel;
+import client.rtsp.model.ClientModel;
 
 public class ClientController {
 

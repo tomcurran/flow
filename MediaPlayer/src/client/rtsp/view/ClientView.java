@@ -1,4 +1,4 @@
-package client.view;
+package client.rtsp.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -16,9 +16,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import client.controller.ClientController;
-import client.model.ClientModel;
-import client.model.ClientModel.Update;
+import client.rtsp.controller.ClientController;
+import client.rtsp.model.ClientModel;
+import client.rtsp.model.ClientModel.Update;
 
 
 @SuppressWarnings("serial")
