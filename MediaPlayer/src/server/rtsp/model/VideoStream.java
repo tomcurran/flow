@@ -9,7 +9,7 @@ public class VideoStream {
 	private FileInputStream fis;
 
 	public VideoStream(String filename) throws Exception {
-		fis = new FileInputStream("." + System.getProperty("file.separator") + "videos" + System.getProperty("file.separator") + filename);
+		fis = new FileInputStream("." + System.getProperty("file.separator") + "public" + System.getProperty("file.separator") + "videos" + System.getProperty("file.separator") + filename);
 	}
 
 	/**

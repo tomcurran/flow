@@ -2,14 +2,17 @@ package server;
 
 import java.io.IOException;
 
+import server.rtsp.model.RTSPServer;
 import server.web.WebServer;
 
 public class MediaServer {
 
 	private int webServerPort;
+	private int rtspServerPort;
 
-	public MediaServer(int webServerPort) {
+	public MediaServer(int webServerPort, int rtspServerPort) {
 		this.webServerPort = webServerPort;
+		this.rtspServerPort = rtspServerPort;
 	}
 
 	public void startWeb() {
@@ -23,7 +26,11 @@ public class MediaServer {
 
 	public void startRTSP() {
 		MediaServer.log("starting RTSP server\n");
-		// TODO rtsp server
+		try {
+			new Thread(new RTSPServer(rtspServerPort)).start();
+		} catch (IOException e) {
+			MediaServer.log("could not start RTSP server on port %d\n", rtspServerPort);
+		}
 	}
 
 	protected static void log(String format, Object... args) {

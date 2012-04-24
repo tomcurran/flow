@@ -13,11 +13,11 @@ import client.rtsp.model.ClientModel.RTSP_STATE;
 
 public class RTSPTransport {
 
+	private final static String CRLF = "\r\n";
+
 	private Socket socket;
 	private BufferedReader reader;
 	private BufferedWriter writer;
-	private final static String CRLF = "\r\n";
-
 	private ClientModel model;
 	private InetAddress ip;
 	private int port;

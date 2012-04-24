@@ -8,78 +8,53 @@ import java.util.Observer;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import server.rtsp.controller.ServerController;
-import server.rtsp.controller.ServerWindowListener;
-import server.rtsp.model.ServerModel;
+import server.rtsp.model.RTSPRequest;
+import server.rtsp.model.RTSPRequest.Update;
 
-	/**
-	 * @author jwb09119
-	 * @date 18/04/2012
-	 * 
-	 * A basic view for the sever - should show state
-	 * and other debug information.
-	 */
+@SuppressWarnings("serial")
+public class ServerView extends JFrame implements Observer {
 
-public class ServerView extends JFrame implements Observer{
-	ServerController controller;
-	JLabel stateLabel;
-	JLabel frameLabel;
-	
-	// Constructor
-	public ServerView (ServerModel model) {
-		controller = new ServerController(model);
+	private RTSPRequest model;
+	private JLabel stateLabel;
+	private JLabel frameLabel;
+
+	public ServerView (RTSPRequest model) {
+		super("Server");
+		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.model = model;
 		model.addObserver(this);
-		this.addWindowListener(new ServerWindowListener(model));
-
-		//showView();
+		initisaliseComponents();
+		setStateLabel();
+		setFrameLabel();
 	}
 
-	
-	public void showView() {
-		
-		super.setTitle("Server");
+	private void initisaliseComponents() {
 		this.setMinimumSize(new Dimension(200, 200));
 		this.setMaximumSize(new Dimension(200, 200));
 		this.setResizable(false);
-		
-		stateLabel = new JLabel("State: ", JLabel.CENTER);
+		stateLabel = new JLabel();
 		this.add(stateLabel, BorderLayout.NORTH);
-		
-		frameLabel = new JLabel("Send frame #", JLabel.CENTER);
+		frameLabel = new JLabel();
 		getContentPane().add(frameLabel, BorderLayout.CENTER);
-		
-		this.setVisible(true);
 	}
-	
-	
-	public void setStateLabel (String state) {
-		if (stateLabel != null ) {
-			stateLabel.setText("State: "+ state);
-			this.repaint();
-		}
+
+	public void setStateLabel() {
+		stateLabel.setText("State: " + model.getState());
 	}
-	
-	
-	public void setFrameLabel (String frameNo) {
-		if (frameLabel != null) { 
-			frameLabel.setText("State: "+ frameNo);
-			this.repaint();
-		}
+
+	public void setFrameLabel() {
+		frameLabel.setText("Frame: #" + model.getFrameNumber());
 	}
-	
-	
+
 	@Override
-	public void update(Observable arg0, Object arg1) {
-		String state = ((ServerModel)arg0).getState();
-		if (state != null) { 
-			setStateLabel(state);
-		}
-		
-		if (arg1 != null) {
-			String frameNo = ((String)arg1);
-			if (frameNo.startsWith("Send")) {
-				setFrameLabel(frameNo);
-			}
+	public void update(Observable o, Object arg) {
+		switch ((Update) arg) {
+		case STATE:
+			setStateLabel();
+			break;
+		case FRAME:
+			setFrameLabel();
+			break;
 		}
 	}
 
