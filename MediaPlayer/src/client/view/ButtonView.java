@@ -13,7 +13,6 @@ import javax.swing.JPanel;
 
 import client.controller.MediaController;
 import client.model.MediaPlayer.Update;
-import client.view.icons.StatisticsIcon;
 
 @SuppressWarnings("serial")
 public class ButtonView extends JPanel implements Observer {
