@@ -22,7 +22,6 @@ public class ClientModel extends Observable {
 	}
 
 	public enum RTSP_STATE {
-		NONE,
 		INIT,
 		READY,
 		PLAYING
@@ -63,7 +62,7 @@ public class ClientModel extends Observable {
 			rtspTransport.sendRequest("SETUP");
 			responseCode = rtspTransport.parseResponse();
 			if (responseCode == 200) {
-				setState(ClientModel.RTSP_STATE.READY);
+				setState(RTSP_STATE.READY);
 			}
 		}
 		return responseCode;
@@ -76,7 +75,7 @@ public class ClientModel extends Observable {
 			rtspTransport.sendRequest("PLAY");
 			responseCode = rtspTransport.parseResponse();
 			if (responseCode == 200) {
-				setState(ClientModel.RTSP_STATE.PLAYING);
+				setState(RTSP_STATE.PLAYING);
 				playHandle = scheduler.scheduleAtFixedRate(play, 0, 20, MILLISECONDS);
 			}
 		}
@@ -104,7 +103,7 @@ public class ClientModel extends Observable {
 		responseCode = rtspTransport.parseResponse();
 		if (responseCode == 200) {
 			rtpTransport.close();
-			setState(ClientModel.RTSP_STATE.INIT);
+			setState(RTSP_STATE.INIT);
 			playHandle.cancel(false);
 		}
 		return responseCode;
