@@ -1,4 +1,4 @@
-package shared;
+package server.model;
 
 
 import java.io.FileInputStream;
@@ -9,7 +9,7 @@ public class VideoStream {
 	private FileInputStream fis;
 
 	public VideoStream(String filename) throws Exception {
-		fis = new FileInputStream(filename);
+		fis = new FileInputStream("." + System.getProperty("file.separator") + "videos" + System.getProperty("file.separator") + filename);
 	}
 
 	/**

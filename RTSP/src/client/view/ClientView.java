@@ -1,4 +1,4 @@
-package client;
+package client.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -16,7 +16,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import client.ClientModel.Update;
+import client.controller.ClientController;
+import client.model.ClientModel;
+import client.model.ClientModel.Update;
 
 
 @SuppressWarnings("serial")
