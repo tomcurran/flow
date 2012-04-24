@@ -25,6 +25,7 @@ public class StopIcon implements Icon{
                  RenderingHints.VALUE_ANTIALIAS_ON);
 	    g.setColor(Color.black);
 	    g.fillRect(x, y, getIconWidth(), getIconHeight());
+	    System.out.println("x: " + x + " y: " + y);
 	     
 	}
 }

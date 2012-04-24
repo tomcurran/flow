@@ -14,24 +14,24 @@ public class SeekBackIcon implements Icon {
 
 	@Override
 	public int getIconHeight() {
-		return 5;
+		return 20;
 	}
 
 	@Override
 	public int getIconWidth() {
-		return 26;
+		return 2;
 	}
 
 	@Override
 	public void paintIcon(Component c, Graphics g, int x, int y) {
 		//Points for the triangle that makes up the seek button. 
-		Point p1 = new Point(18, 5);
-		Point p2 = new Point(18, 26);
-		Point p3 = new Point(10, 13);
+		Point p1 = new Point(16, 5);
+		Point p2 = new Point(16, 20);
+		Point p3 = new Point(7, 10);
 		
-		Point p4 = new Point(31, 5);
-		Point p5 = new Point(31, 26);
-		Point p6 = new Point(18, 13);
+		Point p4 = new Point(20, 5);
+		Point p5 = new Point(20, 20);
+		Point p6 = new Point(16, 10);
 		
 		Point p7 = new Point(5, 5);
 		

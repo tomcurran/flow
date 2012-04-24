@@ -13,14 +13,14 @@ public class MediaController {
 	}
 
 	public void playpause(String action) {
-		if (action.equals("Play")) {
+		if (action.equals("PLAY")) {
 			try {
 				model.play();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} else if (action.equals("Pause")) {
+		} else if (action.equals("PAUSE")) {
 			model.pause();
 		}
 	}
