@@ -1,14 +1,19 @@
 package client.view;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListModel;
 
 import client.controller.LibraryController;
 import client.model.Library;
@@ -18,19 +23,34 @@ public class LibraryView extends JPanel implements Observer {
 
 	private static final long serialVersionUID = 1L;
 	private LibraryController controller;
+	
+	private JScrollPane scrollpane;
+	private JList listView;
+	private JList panelView;
+	private List<Object> data;
 
 	public LibraryView(LibraryController libraryController) {
 		this.controller = libraryController;
 		this.controller.getModel().addObserver(this);
+		data = new ArrayList<Object>();
 		initialiseComponents();
 	}
 
 
 
 	private void initialiseComponents() {
-		this.setPreferredSize(new Dimension(100, 100));
-	
+		this.setPreferredSize(new Dimension(400, 400));
+		this.setLayout(new BorderLayout());
+		scrollpane = new JScrollPane(listView);
+		scrollpane.setEnabled(true);
+		listView = new JList();
+		listView.setPreferredSize(new Dimension(400, 400));
+		listView.setMinimumSize(new Dimension(400, 400));
+		panelView = new JList();
+		scrollpane.setSize(new Dimension(1000, 1000));
 		fillDisplay();
+		scrollpane.getViewport().setView(listView);
+		this.add(scrollpane, BorderLayout.CENTER);
 	}
 
 
@@ -42,7 +62,23 @@ public class LibraryView extends JPanel implements Observer {
 		System.out.println("number of entries: " + entries.size());
 		for (LibraryEntry libraryEntry : entries) {
 			addMedia(libraryEntry.getLocation(), libraryEntry.getRunTime(), libraryEntry.getSize());
+			addMedia(libraryEntry.getLocation(), libraryEntry.getRunTime(), libraryEntry.getSize());
+			addMedia(libraryEntry.getLocation(), libraryEntry.getRunTime(), libraryEntry.getSize());
+			addMedia(libraryEntry.getLocation(), libraryEntry.getRunTime(), libraryEntry.getSize());
+			addMedia(libraryEntry.getLocation(), libraryEntry.getRunTime(), libraryEntry.getSize());
+			addMedia(libraryEntry.getLocation(), libraryEntry.getRunTime(), libraryEntry.getSize());
+			addMedia(libraryEntry.getLocation(), libraryEntry.getRunTime(), libraryEntry.getSize());
+			addMedia(libraryEntry.getLocation(), libraryEntry.getRunTime(), libraryEntry.getSize());
+			addMedia(libraryEntry.getLocation(), libraryEntry.getRunTime(), libraryEntry.getSize());
+			addMedia(libraryEntry.getLocation(), libraryEntry.getRunTime(), libraryEntry.getSize());
+			addMedia(libraryEntry.getLocation(), libraryEntry.getRunTime(), libraryEntry.getSize());
+			addMedia(libraryEntry.getLocation(), libraryEntry.getRunTime(), libraryEntry.getSize());
+			addMedia(libraryEntry.getLocation(), libraryEntry.getRunTime(), libraryEntry.getSize());
+			addMedia(libraryEntry.getLocation(), libraryEntry.getRunTime(), libraryEntry.getSize());
 		}
+		
+		listView = new JList(data.toArray());
+		
 	}
 
 
@@ -58,19 +94,19 @@ public class LibraryView extends JPanel implements Observer {
 		
 		JPanel mediaPanel = new JPanel();
 		
-		mediaPanel.setPreferredSize(new Dimension(100, 100));
+		data.add(new ImageIcon("./images/icons/forward.png") + " " + title);
 		
-		JLabel mediaTitle = new JLabel(); 
-		mediaTitle.setText("moo");
+		JLabel mediaTitle = new JLabel(title); 
+	
 		JLabel mediaTime = new JLabel("Running Time: " + runningTime);
 		JLabel mediaSize = new JLabel(fileSize);
 		System.out.println("mediaTitle: " + title);
-		this.add(mediaTitle);
-		mediaPanel.add(mediaTime);
-		mediaPanel.add(mediaSize);
+		listView.add(mediaTitle);
+		listView.add(mediaTime);
+		listView.add(mediaSize);
+	
 		
-		this.add(mediaTitle);
-
+		
 	}
 
 }
