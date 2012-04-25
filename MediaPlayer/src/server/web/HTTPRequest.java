@@ -9,11 +9,28 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 public class HTTPRequest implements Runnable {
 
 	private final static String CRLF = "\r\n";
+	private final static String DEFAULT_MIME_TYPE = "application/octet-stream";
+	private static Map<String, String> extensionMIMETypes;
+
+	static {
+		extensionMIMETypes = new HashMap<String, String>();
+		extensionMIMETypes.put("htm",  "text/html");
+		extensionMIMETypes.put("html", "text/html");
+		extensionMIMETypes.put("xml",  "text/xml");
+		extensionMIMETypes.put("jpg",  "image/jpeg");
+		extensionMIMETypes.put("jpeg", "image/jpeg");
+		extensionMIMETypes.put("gif",  "image/gif");
+		extensionMIMETypes.put("gif",  "image/png");
+		extensionMIMETypes.put("ico",  "image/x-icon");
+		extensionMIMETypes.put("mjpeg",  "video/x-motion-jpeg");
+	}
 
 	private Socket socket;
 
@@ -114,16 +131,11 @@ public class HTTPRequest implements Runnable {
 	}
 
 	private static String contentType(String fileName) {
-		if (fileName.endsWith(".htm") || fileName.endsWith(".html")) {
-			return "text/html";
+		String ext = (fileName.substring(fileName.lastIndexOf('.') + 1)).toLowerCase();
+		if (extensionMIMETypes.containsKey(ext)) {
+			return extensionMIMETypes.get(ext);
 		}
-		if (fileName.endsWith(".jpg") || fileName.endsWith(".jpeg")) {
-			return "image/jpeg";
-		}
-		if (fileName.endsWith(".gif")) {
-			return "image/gif";
-		}
-		return "application/octet-stream";
+		return DEFAULT_MIME_TYPE;
 	}
 
 }

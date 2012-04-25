@@ -25,6 +25,7 @@ public class RTSPRequest extends Observable implements ActionListener, Runnable 
 	}
 
 	public enum RTSP_STATES {
+		NONE,
 		INIT,
 		READY,
 		PLAYING
@@ -121,6 +122,7 @@ public class RTSPRequest extends Observable implements ActionListener, Runnable 
 					RTSPServer.log("I/O exception closing RTSP socket: %s\n", e.getMessage());
 				}
 				RTPTransport.close();
+				setState(RTSP_STATES.NONE);
 				return;
 			} else if (request == RTSP_METHODS.NONE) {
 				timer.stop();
@@ -130,6 +132,7 @@ public class RTSPRequest extends Observable implements ActionListener, Runnable 
 					RTSPServer.log("I/O exception closing RTSP socket: %s\n", e.getMessage());
 				}
 				RTPTransport.close();
+				setState(RTSP_STATES.NONE);
 				RTSPServer.log("client disconnected\n");
 				return;
 			}
@@ -188,12 +191,6 @@ public class RTSPRequest extends Observable implements ActionListener, Runnable 
 		return rtspId;
 	}
 
-	public void setFrameNumber(int frameNumber) {
-		this.frameNumber = frameNumber;
-		this.setChanged();
-		this.notifyObservers(Update.FRAME);
-	}
-
 	public int getFrameNumber() {
 		return frameNumber;
 	}
@@ -214,7 +211,7 @@ public class RTSPRequest extends Observable implements ActionListener, Runnable 
 
 	public void setState(RTSP_STATES state) {
 		this.state = state;
-		RTSPServer.log("new state %s (%d)\n", state, getSessionId());
+		RTSPServer.log("state %s (%d)\n", state, getSessionId());
 		this.setChanged();
 		this.notifyObservers(Update.STATE);
 	}

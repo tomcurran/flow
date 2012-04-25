@@ -50,8 +50,8 @@ public class RTSPTransport {
 			if (requestLine == null) {
 				return request;
 			}
-			RTSPServer.log("received from client... \n");
-			RTSPServer.log("%s\n", requestLine);
+//			RTSPServer.log("received from client... \n");
+			RTSPServer.log("%s (%d)\n", requestLine, model.getSessionId());
 
 			StringTokenizer tokens = new StringTokenizer(requestLine);
 			String requestTypeString = new String(tokens.nextToken());
@@ -74,14 +74,14 @@ public class RTSPTransport {
 
 			// parse the seqNumLine and extract CSeq field
 			String seqNumLine = rtspReader.readLine();
-			RTSPServer.log("%s\n", seqNumLine);
+//			RTSPServer.log("%s\n", seqNumLine);
 			tokens = new StringTokenizer(seqNumLine);
 			tokens.nextToken();
 			model.setSequenceNumber(Integer.parseInt(tokens.nextToken()));
 
 			// get lastLine
 			String lastLine = rtspReader.readLine();
-			RTSPServer.log("%s\n", lastLine);
+//			RTSPServer.log("%s\n", lastLine);
 
 			if (request == RTSP_METHODS.SETUP) {
 				// extract rtpDestPort from lastLine
@@ -105,7 +105,7 @@ public class RTSPTransport {
 			rtspWriter.write("CSeq: " + model.getSquenceNumber() + CRLF);
 			rtspWriter.write("Session: " + model.getSessionId() + CRLF);
 			rtspWriter.flush();
-			RTSPServer.log("sending response to client\n");
+//			RTSPServer.log("sending response to client\n");
 		} catch (IOException e) {
 			RTSPServer.log("I/O exception sending RTSP response: %s\n", e.getMessage());
 		}
