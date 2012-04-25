@@ -14,7 +14,7 @@ import client.controller.LibraryController;
 import client.model.Library;
 import client.model.LibraryEntry;
 
-public class LibraryView extends JScrollPane implements Observer {
+public class LibraryView extends JPanel implements Observer {
 
 	private static final long serialVersionUID = 1L;
 	private LibraryController controller;
@@ -28,7 +28,7 @@ public class LibraryView extends JScrollPane implements Observer {
 
 
 	private void initialiseComponents() {
-		this.setPreferredSize(new Dimension(380, 280));
+		this.setPreferredSize(new Dimension(100, 100));
 	
 		fillDisplay();
 	}
@@ -39,10 +39,10 @@ public class LibraryView extends JScrollPane implements Observer {
 		Library model = controller.getModel();
 		List<LibraryEntry> entries = model.getLibrary();
 		
+		System.out.println("number of entries: " + entries.size());
 		for (LibraryEntry libraryEntry : entries) {
-			addMedia(libraryEntry.getTitle(), libraryEntry.getRunTime(), libraryEntry.getSize());
+			addMedia(libraryEntry.getLocation(), libraryEntry.getRunTime(), libraryEntry.getSize());
 		}
-		
 	}
 
 
@@ -58,19 +58,18 @@ public class LibraryView extends JScrollPane implements Observer {
 		
 		JPanel mediaPanel = new JPanel();
 		
-		mediaPanel.setPreferredSize(new Dimension(400, 100));
+		mediaPanel.setPreferredSize(new Dimension(100, 100));
 		
-		Graphics g = this.getGraphics();
-		JLabel mediaTitle = new JLabel(title); 
+		JLabel mediaTitle = new JLabel(); 
+		mediaTitle.setText("moo");
 		JLabel mediaTime = new JLabel("Running Time: " + runningTime);
 		JLabel mediaSize = new JLabel(fileSize);
-		
-		mediaPanel.paintComponents(g);
-		mediaPanel.add(mediaTitle);
+		System.out.println("mediaTitle: " + title);
+		this.add(mediaTitle);
 		mediaPanel.add(mediaTime);
 		mediaPanel.add(mediaSize);
 		
-		this.add(mediaPanel);
+		this.add(mediaTitle);
 
 	}
 

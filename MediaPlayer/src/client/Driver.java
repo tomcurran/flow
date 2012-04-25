@@ -22,7 +22,7 @@ public class Driver {
 
 	public static void main(String[] args) {
 
-		if (args.length != 3) {
+		if (args.length != 4) {
 			System.err.printf("RTSP server host name, listening port and video file required\n");
 			System.err.printf("Useage: %s\n", USEAGE);
 			System.exit(0);

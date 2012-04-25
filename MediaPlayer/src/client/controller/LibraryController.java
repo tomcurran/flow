@@ -13,11 +13,7 @@ public class LibraryController {
 	}
 
 	public void updateLibrary(String action) {
-		if (action.equals("REFRESH")) {
-			// TODO Should there be a separate model for the library of media?!
-			// Would refresh the library list from the call model.refresh().
-			// This would update the view with the latest list of available
-			// media on the server. 
+		if (action.equals("REFRESH")) { 
 			model.refresh();
 		} else if (action.equals("DOUBLECLICK")) {
 			//TODO start playing the media. 
