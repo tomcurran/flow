@@ -18,6 +18,7 @@ public class StatsViewmodel extends Observable implements Observer{
 		model.addObserver(this);
 	}
 
+	
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		int[] data = ((int[]) arg1);
@@ -29,11 +30,35 @@ public class StatsViewmodel extends Observable implements Observer{
 		
 	}
 	
+	
 	private int[] processData(int[] array){
 		int[] reply = array;
 		
-		//TODO process stuff here
+		// get top - round up from highest value
+		int max = getMax(reply);
 		
+		int size = reply.length;
+		for (int i = 0; i < size; i++) {
+			float source = array[i];
+			reply[i] = ((int)((source/max) * 100));
+		}
+		
+		return reply;
+	}
+	
+	
+	private int getMax (int[] array) {
+		
+		int reply = 0;
+		int size = array.length;
+		
+		for (int i = 0; i < size; i++) {
+			int candidate = array[i];
+			if(candidate > reply) {
+				reply = candidate;
+			}
+		}
+
 		return reply;
 	}
 }

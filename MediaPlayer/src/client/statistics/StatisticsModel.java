@@ -32,6 +32,8 @@ public class StatisticsModel extends Observable{
 	// Accessible stats
 	int packetArrivalRate;  //per second
 	int packetArrivalDelay; // last value
+	int packetArrivalDelayAverage; // TODO - calculate this
+	
 	int packetJitterAverage; // Running Average (Absolute)
 	int packetOutOfSequenceCount;
 	Queue<Integer> packetDelays;
@@ -62,7 +64,7 @@ public class StatisticsModel extends Observable{
 		}
 		packetArrivalTimes.add(arrivalTime);
 		
-		logPacketDelay(arrivalTime, packet.getTimeStamp());
+		logPacketDelay(arrivalTime, packet.getHeaderSsrc());
 		logPacketSequence(arrivalTime, packet.getSequenceNumber());
 		recalculateArrivalRate(arrivalTime);
 			
