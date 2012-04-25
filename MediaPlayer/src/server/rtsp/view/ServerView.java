@@ -5,8 +5,12 @@ import java.awt.Dimension;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 
 import server.rtsp.model.RTSPRequest;
 import server.rtsp.model.RTSPRequest.Update;
@@ -15,7 +19,9 @@ import server.rtsp.model.RTSPRequest.Update;
 public class ServerView extends JFrame implements Observer {
 
 	private RTSPRequest model;
+	private JPanel mainPanel;
 	private JLabel stateLabel;
+	private JLabel sequenceLabel;
 	private JLabel frameLabel;
 
 	public ServerView (RTSPRequest model) {
@@ -24,26 +30,44 @@ public class ServerView extends JFrame implements Observer {
 		this.model = model;
 		model.addObserver(this);
 		initisaliseComponents();
+		setTitle();
 		setStateLabel();
+		setSequenceLabel();
 		setFrameLabel();
 	}
 
 	private void initisaliseComponents() {
-		this.setMinimumSize(new Dimension(200, 200));
-		this.setMaximumSize(new Dimension(200, 200));
-		this.setResizable(false);
+		Border padding = new EmptyBorder(10, 10, 10, 10);
+		mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.PAGE_AXIS));
+		mainPanel.setPreferredSize(new Dimension(230, 100));
 		stateLabel = new JLabel();
-		this.add(stateLabel, BorderLayout.NORTH);
+		sequenceLabel = new JLabel();
 		frameLabel = new JLabel();
-		getContentPane().add(frameLabel, BorderLayout.CENTER);
+		stateLabel.setBorder(padding);
+		sequenceLabel.setBorder(padding);
+		frameLabel.setBorder(padding);
+		mainPanel.add(stateLabel);
+		mainPanel.add(sequenceLabel);
+		mainPanel.add(frameLabel);
+		this.add(mainPanel, BorderLayout.CENTER);
+		this.pack();
 	}
 
 	public void setStateLabel() {
-		stateLabel.setText("State: " + model.getState());
+		stateLabel.setText("Current state: " + model.getState());
 	}
 
 	public void setFrameLabel() {
-		frameLabel.setText("Frame: #" + model.getFrameNumber());
+		frameLabel.setText("Sent frame: #" + model.getFrameNumber());
+	}
+
+	public void setSequenceLabel() {
+		sequenceLabel.setText("Request #" + model.getSquenceNumber());
+	}
+
+	public void setTitle() {
+		setTitle("Serving client " + model.getSessionId());
 	}
 
 	@Override
@@ -54,6 +78,9 @@ public class ServerView extends JFrame implements Observer {
 			break;
 		case FRAME:
 			setFrameLabel();
+			break;
+		case SEQUENCE:
+			setSequenceLabel();
 			break;
 		}
 	}

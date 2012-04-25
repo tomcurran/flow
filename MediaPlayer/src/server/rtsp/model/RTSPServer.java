@@ -5,6 +5,8 @@ import java.net.ServerSocket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import server.rtsp.view.ServerView;
+
 public class RTSPServer implements Runnable {
 
 	private final ServerSocket socket;
@@ -20,7 +22,14 @@ public class RTSPServer implements Runnable {
 	public void run() {
 		try {
 			for (;;) {
-				pool.execute(new RTSPRequest(socket.accept()));
+				final RTSPRequest rtspRequest = new RTSPRequest(socket.accept());
+		        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+		            public void run() {
+		            	ServerView view = new ServerView(rtspRequest);
+		            	view.setVisible(true);
+		            }
+		        });
+				pool.execute(rtspRequest);
 			}
 		} catch (IOException e) {
 			pool.shutdown();

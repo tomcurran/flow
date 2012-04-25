@@ -188,12 +188,6 @@ public class RTSPRequest extends Observable implements ActionListener, Runnable 
 		return rtspId;
 	}
 
-	public void setFrameNumber(int frameNumber) {
-		this.frameNumber = frameNumber;
-		this.setChanged();
-		this.notifyObservers(Update.FRAME);
-	}
-
 	public int getFrameNumber() {
 		return frameNumber;
 	}
