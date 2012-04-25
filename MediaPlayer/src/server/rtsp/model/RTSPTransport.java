@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.StringTokenizer;
 
 import server.rtsp.model.RTSPRequest.RTSP_METHODS;
 
@@ -43,6 +42,7 @@ public class RTSPTransport {
 	}
 
 	public RTSP_METHODS parseRequest() {
+		String[] tokens;
 		RTSP_METHODS request = RTSP_METHODS.NONE;
 		try {
 			// parse request line and extract the request_type:
@@ -53,8 +53,8 @@ public class RTSPTransport {
 //			RTSPServer.log("received from client... \n");
 			RTSPServer.log("%s (%d)\n", requestLine, model.getSessionId());
 
-			StringTokenizer tokens = new StringTokenizer(requestLine);
-			String requestTypeString = new String(tokens.nextToken());
+			tokens = requestLine.split("\\s");
+			String requestTypeString = new String(tokens[0]);
 
 			// convert to request_type structure:
 			if (requestTypeString.compareTo("SETUP") == 0) {
@@ -69,15 +69,16 @@ public class RTSPTransport {
 
 			if (request == RTSP_METHODS.SETUP) {
 				// extract videoName from requestLine
-				model.setVideoName(tokens.nextToken());
+				model.setVideoName(tokens[1]);
 			}
 
 			// parse the seqNumLine and extract CSeq field
 			String seqNumLine = rtspReader.readLine();
 //			RTSPServer.log("%s\n", seqNumLine);
-			tokens = new StringTokenizer(seqNumLine);
-			tokens.nextToken();
-			model.setSequenceNumber(Integer.parseInt(tokens.nextToken()));
+			tokens = seqNumLine.split("\\s");
+			if (tokens[0].equals("CSeq:")) {
+				model.setSequenceNumber(Integer.parseInt(tokens[1]));
+			}
 
 			// get lastLine
 			String lastLine = rtspReader.readLine();
@@ -85,11 +86,8 @@ public class RTSPTransport {
 
 			if (request == RTSP_METHODS.SETUP) {
 				// extract rtpDestPort from lastLine
-				tokens = new StringTokenizer(lastLine);
-				for (int i = 0; i < 3; i++) {
-					tokens.nextToken(); // skip unused stuff
-				}
-				model.setClientPort(Integer.parseInt(tokens.nextToken()));
+				tokens = lastLine.split("\\s");
+				model.setClientPort(Integer.parseInt(tokens[3]));
 			}
 			// else lastLine will be the SessionId line ... do not check for now.
 		} catch (IOException e) {
