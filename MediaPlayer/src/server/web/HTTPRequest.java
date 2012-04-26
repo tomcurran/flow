@@ -27,7 +27,7 @@ public class HTTPRequest implements Runnable {
 		extensionMIMETypes.put("jpg",  "image/jpeg");
 		extensionMIMETypes.put("jpeg", "image/jpeg");
 		extensionMIMETypes.put("gif",  "image/gif");
-		extensionMIMETypes.put("gif",  "image/png");
+		extensionMIMETypes.put("png",  "image/png");
 		extensionMIMETypes.put("ico",  "image/x-icon");
 		extensionMIMETypes.put("mjpeg",  "video/x-motion-jpeg");
 	}

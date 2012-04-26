@@ -12,10 +12,10 @@ public class LibraryController {
 		this.model = model;
 	}
 
-	public void updateLibrary(String action) {
-		if (action.equals("REFRESH")) { 
-			model.refresh();
-		} else if (action.equals("DOUBLECLICK")) {
+	public void updateLibrary(String actionCommand) {
+		if (actionCommand.equals("REFRESH")) { 
+			model.refresh(actionCommand);
+		} else if (actionCommand.equals("DOUBLECLICK")) {
 			//TODO start playing the media. 
 		}
 	}
@@ -23,6 +23,10 @@ public class LibraryController {
 
 	public Library getModel() {
 		return model;
+	}
+
+	public void switchview(String actionCommand) {
+		model.refresh(actionCommand);
 	}
 
 }

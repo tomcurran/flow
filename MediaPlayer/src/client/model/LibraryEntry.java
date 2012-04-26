@@ -1,5 +1,7 @@
 package client.model;
 
+import java.awt.Image;
+
 public class LibraryEntry {
 
 	private String title;
@@ -9,9 +11,10 @@ public class LibraryEntry {
 	private String length;
 	private String period;
 	private String type;
+	private Image thumbnail;
 	
 	
-	public LibraryEntry(String title, String runTime, String size, String location, String length, String period, String type){
+	public LibraryEntry(String title, String runTime, String size, String location, String length, String period, String type, Image thumbnail){
 		this.title = title;
 		this.runTime = runTime;
 		this.size = size;
@@ -19,7 +22,7 @@ public class LibraryEntry {
 		this.length = length;
 		this.period = period;
 		this.type = type;
-		
+		this.thumbnail = thumbnail;
 	}
 
 	public String getTitle() {
@@ -76,6 +79,14 @@ public class LibraryEntry {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+	
+	public Image getThumbnail() {
+		return thumbnail;
+	}
+
+	public void setThumbnail(Image thumbnail) {
+		this.thumbnail = thumbnail;
 	}
 
 }

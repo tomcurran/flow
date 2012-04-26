@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 
 import client.controller.LibraryController;
 import client.controller.MediaController;
+import client.model.Library.Update;
 
 @SuppressWarnings("serial")
 public class ClientView extends JFrame implements Observer{
@@ -46,7 +47,7 @@ public class ClientView extends JFrame implements Observer{
 		contentPane.setLayout(new BorderLayout());
 		contentPane.setPreferredSize(new Dimension(380, 280));
 		contentPane.add(libraryView, BorderLayout.CENTER);
-		contentPane.add(libraryButtons, BorderLayout.SOUTH);
+		contentPane.add(libraryButtons, BorderLayout.NORTH);
 
 		super.setContentPane(contentPane);
 		super.setMinimumSize(new Dimension(390, 370));
@@ -60,27 +61,36 @@ public class ClientView extends JFrame implements Observer{
 
 	@Override
 	public void update(Observable o, Object arg) {
-		String command = (String) arg;
-		if(command.equals("PLAYMODE")){
+		Update command = (Update) arg;
+		System.out.println(" Command: " + command.toString());
+		
+		if(command == Update.SELECTED){
 			contentPane.removeAll();
 			contentPane.add(mediaView, BorderLayout.CENTER);
 			contentPane.add(playerButtons, BorderLayout.SOUTH);
 			
+			String media = libraryController.getModel().getSelectedMedia();
+			System.out.println("MEDIA WHEN SWITCHED: " + media);
+			mediaController.getModel().openMedia(media);
+			System.out.println("Switched to mediaplayer");
 			super.setContentPane(contentPane);
 			super.setMinimumSize(new Dimension(390, 370));
 
 			super.pack();
 			super.requestFocus();
+			super.repaint();
 		}else{
 			contentPane.removeAll();
 			contentPane.add(libraryView, BorderLayout.CENTER);
-			contentPane.add(libraryButtons, BorderLayout.SOUTH);
+			contentPane.add(libraryButtons, BorderLayout.NORTH);
 
 			super.setContentPane(contentPane);
 			super.setMinimumSize(new Dimension(390, 370));
 
 			super.pack();
 			super.requestFocus();
+			super.repaint();
+		
 		}
 	}
 

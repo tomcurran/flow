@@ -7,7 +7,8 @@ import java.net.UnknownHostException;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+
+import javax.swing.UIManager.*;
 
 import client.controller.LibraryController;
 import client.controller.MediaController;
@@ -32,11 +33,16 @@ public class Driver {
 		InetAddress serverIp = null;
 		int rtspServerPort = 0;
 		int webServerPort = 0;
-		String videoName = args[2];
+	
 
 		try {
 			serverIp = InetAddress.getByName(serverHost);
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+		        if ("Nimbus".equals(info.getName())) {
+		            UIManager.setLookAndFeel(info.getClassName());
+		            break;
+		        }
+			}
 		} catch (UnknownHostException e) {
 			System.err.printf("RTSP server host not found: %s\n", serverHost);
 			System.err.printf("Useage: %s\n", USEAGE);
@@ -65,7 +71,7 @@ public class Driver {
 		MediaPlayer mediaModel = null;
 		Library libraryModel = new Library(serverIp, webServerPort);
 		try {
-			mediaModel = new MediaPlayer(videoName, serverIp, rtspServerPort);
+			mediaModel = new MediaPlayer(serverIp, rtspServerPort);
 		} catch (IOException e) {
 			System.err.printf("I/O exception connecting to RTSP server: %s\n", e.getMessage());
 			System.exit(0);

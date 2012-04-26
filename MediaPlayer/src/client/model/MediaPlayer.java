@@ -35,6 +35,8 @@ public class MediaPlayer extends Observable implements Observer {
 	private ClientModel rtspClient;
 	private int playRate;
 	private int videoLength;
+	private InetAddress serverIp;
+	private int rtspServerPort;
 
 	private ScheduledExecutorService scheduler;
 	private ScheduledFuture<?> playHandle;
@@ -44,7 +46,7 @@ public class MediaPlayer extends Observable implements Observer {
 		}
 	};
 
-	public MediaPlayer(String videoName, InetAddress serverIp, int rtspServerPort) throws IOException {
+	public MediaPlayer(InetAddress serverIp, int rtspServerPort) throws IOException {
 		state = STATE.STOP;
 		currentFrame = 0;
 		buffer = new ArrayList<RTPpacket>();
@@ -52,8 +54,9 @@ public class MediaPlayer extends Observable implements Observer {
 		playRate = 1000 / 20;
 		playHandle = null;
 		scheduler = Executors.newScheduledThreadPool(1);
-		rtspClient = new ClientModel(videoName, serverIp, rtspServerPort);
-		rtspClient.addObserver(this);
+		this.serverIp = serverIp;
+		this.rtspServerPort = rtspServerPort;
+		
 	}
 
 	public STATE getState() {
@@ -175,6 +178,18 @@ public class MediaPlayer extends Observable implements Observer {
 
 	private boolean bufferLowerBound() {
 		return (double)(buffer.size() - currentFrame) / videoLength < 0.05;
+	}
+	
+	public void openMedia(String videoName){
+		System.out.println("MEDIA TO OPEN: " + videoName);
+		try {
+			rtspClient = new ClientModel(videoName, serverIp, rtspServerPort);
+			rtspClient.addObserver(this);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 }

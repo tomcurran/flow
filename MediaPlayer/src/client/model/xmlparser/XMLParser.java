@@ -1,5 +1,6 @@
 package client.model.xmlparser;
 
+import java.awt.Image;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,6 +11,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -27,12 +29,19 @@ public class XMLParser {
 
 	
 	private URL databaseLoc;
+	private URL webserver;
+	private String serverAddress;
+	private int webServerPort;
+	
 	private List<LibraryEntry> library;
 	
 	private File database;
 	
-	public XMLParser(URL databaseLoc){
+	public XMLParser(URL databaseLoc, String serverAddress, int webServerPort){
 		this.databaseLoc = databaseLoc;
+		this.serverAddress = serverAddress;
+		this.webServerPort = webServerPort;
+		
 		library = new ArrayList<LibraryEntry>();
 	}
 
@@ -68,7 +77,7 @@ public class XMLParser {
 	
 	private void parseXML(){
 		try {
-
+			library.clear();
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
             Document doc = docBuilder.parse (new File(database.getAbsolutePath()));
@@ -124,7 +133,19 @@ public class XMLParser {
                    // System.out.println("Type : " + 
                       //     ((Node)textTypeList.item(0)).getNodeValue().trim());
 
-                    LibraryEntry temp = new LibraryEntry("", "", "", location, length, period, type);
+                    NodeList thumbnailList = videoElement.getElementsByTagName("thumbnail");
+                    Element thumbnailElement = (Element)thumbnailList.item(0);
+
+                    NodeList textThumbnailList = thumbnailElement.getChildNodes();
+                    String thumbnailExt = ((Node)textThumbnailList.item(0)).getNodeValue().trim();
+                    URL url = new URL("http", serverAddress, webServerPort, thumbnailExt);
+                    System.out.println("Thumbnail URL" + url.toString());
+                    
+                    Image  thumbnail= null;
+                    thumbnail = ImageIO.read(url);
+                    
+                    
+                    LibraryEntry temp = new LibraryEntry("", "", "", location, length, period, type, thumbnail);
                     library.add(temp);
                 }
                 
