@@ -15,7 +15,7 @@ import server.rtsp.model.RTPpacket;
 
 public class InboundLoggingController{
 	
-	public final static InboundLoggingController object; // Not initialised until called for
+	public static InboundLoggingController object; // Not initialised until called for
 	private static String lockObj = "Lock";  // Used for locking
 	
 	private StatisticsModel model;;
@@ -49,7 +49,13 @@ public class InboundLoggingController{
 	}
 	
 	
-	protected void setModel(StatisticsModel model) {
+	public void setModel(StatisticsModel model) {
 		this.model = model;
 	}
+	
+	public StatisticsModel getStatisticsModel(){
+		return model;
+	}
+	
+	
 }

@@ -74,6 +74,7 @@ public class StatisticsModel extends Observable implements ActionListener{
 	 * Log a packet received by the client
 	 */
 	protected void logPacketReceived(RTPpacket packet, int arrivalTime) {
+		packetsReceived++;
 		if (packetArrivalTimes.size() > LOG_SIZE) {
 			packetArrivalTimes.poll();
 		}
@@ -90,8 +91,8 @@ public class StatisticsModel extends Observable implements ActionListener{
 	}
 	
 	
-	protected void logFrameExitFromBuffer(int eventTime) {
-		
+	protected void logFrameExitFromBuffer() {
+		packetsPlayed++;
 	}
 	
 	
@@ -125,7 +126,7 @@ public class StatisticsModel extends Observable implements ActionListener{
 	private void recalculateArrivalRate(int arrivalTime) {
 		int numberOfPackets=packetArrivalTimes.size();
 		float totalTime = lastPacketArrivalTime - packetArrivalTimes.peek();
-		float packetsPerSecond = numberOfPackets / (totalTime / 1000); // milliseconds
+		packetArrivalRate = (int) (numberOfPackets / (totalTime / 1000)); // milliseconds
 	}
 	
 	

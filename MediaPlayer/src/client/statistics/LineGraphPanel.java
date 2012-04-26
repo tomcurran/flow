@@ -7,6 +7,9 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JPanel;
+
+import client.statistics.tests.LineGraphViewmodel;
+
 import java.awt.Color;
 
 	/**
