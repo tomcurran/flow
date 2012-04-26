@@ -26,8 +26,6 @@ public class MediaPlayer extends Observable implements Observer {
 		RETURN
 	}
 
-	
-
 	private STATE state;
 	private List<RTPpacket> buffer;
 	private int currentFrame;
@@ -65,6 +63,7 @@ public class MediaPlayer extends Observable implements Observer {
 	}
 
 	public void setState(STATE state) {
+		System.out.println("Setting state to: " + state);
 		this.state = state;
 		this.setChanged();
 		this.notifyObservers(Update.STATE);
@@ -93,6 +92,7 @@ public class MediaPlayer extends Observable implements Observer {
 	}
 
 	public void play() throws IOException {
+		System.out.println("Starting play...");
 		switch (getState()) {
 		case STOP:
 			rtspClient.setup();
@@ -107,6 +107,12 @@ public class MediaPlayer extends Observable implements Observer {
 			}
 			break;
 		case PLAY:
+			if (bufferLowerBound()) {
+				System.out.println("In PLAY case");
+				startPlaying();
+			} else {
+				setState(STATE.BUFFER);
+			}
 			break;
 		case BUFFER:
 			break;

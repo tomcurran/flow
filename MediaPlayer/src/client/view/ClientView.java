@@ -2,6 +2,7 @@ package client.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -23,7 +24,7 @@ public class ClientView extends JFrame implements Observer {
 
 	// TODO Jamie, the commented sections here are for you stats magic.
 	private JPanel contentPane;
-
+	private JPanel playerPane;
 	private LibraryView libraryView;
 	private MediaView mediaView;
 	
@@ -47,6 +48,7 @@ public class ClientView extends JFrame implements Observer {
 	private MediaController mediaController;
 	private LibraryController libraryController;
 
+	private boolean statsOn = false;
 	// private StatsController statsController;
 
 	// TODO pass in the stats controller.
@@ -70,6 +72,9 @@ public class ClientView extends JFrame implements Observer {
 		mediaView = new MediaView(mediaController);
 		playerButtons = new PlayerButtonView(mediaController, this);
 
+		playerPane = new JPanel(new BorderLayout());
+		
+		
 		contentPane = new JPanel();
 		contentPane.setLayout(new BorderLayout());
 		contentPane.setPreferredSize(new Dimension(380, 280));
@@ -93,8 +98,11 @@ public class ClientView extends JFrame implements Observer {
 
 		if (command == Update.SELECTED) {
 			contentPane.removeAll();
-			contentPane.add(mediaView, BorderLayout.CENTER);
-			contentPane.add(playerButtons, BorderLayout.SOUTH);
+			playerPane.removeAll();
+			mediaView = new MediaView(mediaController);
+			playerPane.add(mediaView, BorderLayout.CENTER);
+			playerPane.add(playerButtons, BorderLayout.SOUTH);
+			contentPane.add(playerPane, BorderLayout.CENTER);
 
 			String media = libraryController.getModel().getSelectedMedia();
 			System.out.println("MEDIA WHEN SWITCHED: " + media);
@@ -129,27 +137,42 @@ public class ClientView extends JFrame implements Observer {
 		}
 	}
 
-	
+	JPanel statsPane = new JPanel(new BorderLayout());
 	public void setStats() {
 		// TODO Jamie! Setting stat stuff goes here!
+		if(statsOn == false){
+			
+			statsPane.setPreferredSize(new Dimension(300, 400));
+			
+			//add the statsView and statsButtons to the statsPane.
+			StatisticsModel statsModel = InboundLoggingController.getInstance().getStatisticsModel();
+			delayGraphViewmodel = new LineGraphViewmodel(statsModel);
+			delayGraphPanel = new LineGraphPanel(new Dimension(300,100), delayGraphViewmodel);
+			statsPane.add(delayGraphPanel, BorderLayout.CENTER);
+			
+			jitterGraphViewmodel = new LineGraphViewmodel(statsModel);
+			jitterGraphPanel = new LineGraphPanel(new Dimension(300,100), jitterGraphViewmodel);
+			statsPane.add(jitterGraphPanel, BorderLayout.SOUTH);
+			
+			lagGraphViewmodel = new LagGraphViewmodel(statsModel);
+			lagGraphPanel = new LagGraphPanel(new Dimension(300, 200), lagGraphViewmodel);
+			
+			contentPane.add(statsPane, BorderLayout.EAST);
+			super.setMinimumSize(new Dimension(700, 370));
+			statsOn = true;
+		} else {
+			contentPane.remove(statsPane);
+			super.setMinimumSize(new Dimension(390, 370));
+			statsOn = false;
+		}
+		super.setContentPane(contentPane);
+		
 
-		JPanel statsPane = new JPanel(new BorderLayout());
-		statsPane.setPreferredSize(new Dimension(105, 55));
+		super.pack();
+		super.requestFocus();
+		super.repaint();
 		
-		//add the statsView and statsButtons to the statsPane.
-		StatisticsModel statsModel = InboundLoggingController.getInstance().getStatisticsModel();
-		delayGraphViewmodel = new LineGraphViewmodel(statsModel);
-		delayGraphPanel = new LineGraphPanel(new Dimension(300,100), delayGraphViewmodel);
-		statsPane.add(delayGraphPanel);
 		
-		jitterGraphViewmodel = new LineGraphViewmodel(statsModel);
-		jitterGraphPanel = new LineGraphPanel(new Dimension(300,100), jitterGraphViewmodel);
-		statsPane.add(jitterGraphPanel);
-		
-		lagGraphViewmodel = new LagGraphViewmodel(statsModel);
-		lagGraphPanel = new LagGraphPanel(new Dimension(300, 200), lagGraphViewmodel);
-		
-		contentPane.add(statsPane, BorderLayout.EAST);
 
 	}
 

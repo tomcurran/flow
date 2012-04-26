@@ -114,7 +114,9 @@ public class PlayerButtonView extends JPanel implements Observer {
 		playpauseButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				System.out.println("!!!!PLAYPAUSE CLICKED!!!!");
 				controller.playpause(playpauseButton.getActionCommand());
+				
 			}
 		});
 		
@@ -144,11 +146,14 @@ public class PlayerButtonView extends JPanel implements Observer {
 	}
 
 	private void updateGUI() {
+		System.out.println("Changed!!!!!!!!!!!!!!!!");
 		switch (this.controller.getModel().getState()) {
 		case STOP:
 		case PAUSE:
+			
 			playpauseButton.setIcon(playIcon);
 			playpauseButton.setActionCommand("PLAY");
+			System.out.println("Set the actioncommand");
 			break;
 		case BUFFER:
 		case PLAY:
