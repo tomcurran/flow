@@ -1,6 +1,7 @@
 package client.view;
 
 import java.awt.BorderLayout;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -30,14 +31,14 @@ import javax.swing.border.LineBorder;
 import client.controller.LibraryController;
 import client.model.Library;
 import client.model.LibraryEntry;
-import client.model.Library.Update;
+import client.model.Update;
 
 public class LibraryView extends JPanel implements Observer, ListCellRenderer {
 
 	private static final long serialVersionUID = 1L;
 	private LibraryController controller;
 	private String currentView = "listView";
-	
+
 	private JScrollPane scrollpane;
 	private JList listView;
 	private JList panelView;
@@ -53,61 +54,57 @@ public class LibraryView extends JPanel implements Observer, ListCellRenderer {
 		initialiseListeners();
 	}
 
-
-
-
 	private void initialiseListeners() {
-		 listView.addMouseListener(new MouseAdapter() {
-	            public void mouseClicked(MouseEvent e) {
-	                if (e.getClickCount() == 2) {
-	                	int index = listView.getSelectedIndex();
-	                	JPanel temp = (JPanel) dataPanel.get(index);
-	                	Component[] comps = temp.getComponents();
-	                	JLabel label = (JLabel) comps[0];
-	                	String media = label.getText();
-	                	controller.getModel().setSelected(media);
-	                	controller.getModel().setState(Update.SELECTED);
-	                }
-	            }
-	        });
-		 
-		 panelView.addMouseListener(new MouseAdapter() {
-	            public void mouseClicked(MouseEvent e) {
-	                if (e.getClickCount() == 2) {
-	                	int index = panelView.getSelectedIndex();
-	                	JPanel temp = (JPanel) dataPanel.get(index);
-	                	Component[] comps = temp.getComponents();
-	                	JLabel label = (JLabel) comps[0];
-	                	String media = label.getText();
-	                	controller.getModel().setSelected(media);
-	                	controller.getModel().setState(Update.SELECTED);
-	                }
-	            }
-	        });
+		listView.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+
+				int index = listView.getSelectedIndex();
+				JPanel temp = (JPanel) dataPanel.get(index);
+				Component[] comps = temp.getComponents();
+				JLabel label = (JLabel) comps[0];
+				String media = label.getText();
+				controller.getModel().setSelected(media);
+				controller.getModel().setState(Update.SELECTED);
+
+			}
+		});
+
+		panelView.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+
+				int index = panelView.getSelectedIndex();
+				JPanel temp = (JPanel) dataPanel.get(index);
+				Component[] comps = temp.getComponents();
+				JLabel label = (JLabel) comps[0];
+				String media = label.getText();
+				controller.getModel().setSelected(media);
+				controller.getModel().setState(Update.SELECTED);
+
+			}
+		});
 	}
 
-
-
-
 	private void initialiseComponents() {
-		
-		this.setPreferredSize(new Dimension(400, 200));
+
+		this.setPreferredSize(new Dimension(340, 340));
 		this.setLayout(new BorderLayout());
 		scrollpane = new JScrollPane();
+		scrollpane.setBackground(Color.lightGray);
+		this.setBackground(Color.lightGray);
 		listView = new JList();
 		listView.setCellRenderer(this);
 		panelView = new JList();
+
 		panelView.setCellRenderer(this);
 		panelView.setFixedCellHeight(100);
-		panelView.setFixedCellWidth(133);
+		panelView.setFixedCellWidth(100);
 		panelView.setBorder(new EmptyBorder(10, 10, 10, 10));
 		fillDisplay();
 		scrollpane.getViewport().setView(listView);
+		scrollpane.setPreferredSize(new Dimension(340, 340));
 		this.add(scrollpane, BorderLayout.CENTER);
-		
+
 	}
-
-
 
 	private void fillDisplay() {
 		dataList.clear();
@@ -119,16 +116,14 @@ public class LibraryView extends JPanel implements Observer, ListCellRenderer {
 		for (LibraryEntry libraryEntry : entries) {
 			addMedia(libraryEntry);
 		}
-		
+
 		listView.setListData(dataList.toArray());
-		
-		panelView.setLayoutOrientation(JList.VERTICAL_WRAP);
-        panelView.setVisibleRowCount(-1);
+
+		panelView.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		panelView.setVisibleRowCount(-1);
 		panelView.setListData(dataPanel.toArray());
-		
+
 	}
-
-
 
 	@Override
 	public void update(Observable o, Object arg) {
@@ -144,72 +139,71 @@ public class LibraryView extends JPanel implements Observer, ListCellRenderer {
 			break;
 		}
 	}
-	
+
 	private void switchPanel() {
 		fillDisplay();
-		if(currentView.startsWith("panel")){
+		if (currentView.startsWith("panel")) {
 			scrollpane.getViewport().setView(listView);
 			currentView = "listView";
-		}else {
+		} else {
 			scrollpane.getViewport().setView(panelView);
 			currentView = "panelView";
 		}
 		this.repaint();
 	}
 
-
-
-
-	//TODO Add thumbnail into this parameter set?
+	// TODO Add thumbnail into this parameter set?
 	private void addMedia(LibraryEntry entry) {
-		
-		
-		//create icon
+
+		// create icon
 		Icon thumbnail = new ImageIcon(entry.getThumbnail());
-		
-		//create panel string
+
+		// create panel string
 		String panelString = entry.getLocation();
-		
-		//create detailViewString
-		String detailString = "Location: " + entry.getLocation() + "\n Period: " + entry.getPeriod()
-								+ "\n Type: " + entry.getType();
-		
-		//create Jlabel made of Icon and Detail String
+
+		// create detailViewString
+		String detailString = "Location: " + entry.getLocation()
+				+ "\n Period: " + entry.getPeriod() + "\n Type: "
+				+ entry.getType();
+
+		// create Jlabel made of Icon and Detail String
 		Border border = LineBorder.createGrayLineBorder();
 		JLabel panelLabel = new JLabel(panelString, thumbnail, JLabel.CENTER);
+		panelLabel.setToolTipText("Double click to play!");
 		panelLabel.setVerticalTextPosition(JLabel.BOTTOM);
 		panelLabel.setHorizontalTextPosition(JLabel.CENTER);
 		panelLabel.setBorder(border);
-		
+
 		JLabel detailLabel = new JLabel(detailString, thumbnail, JLabel.CENTER);
+		detailLabel.setToolTipText("Double click to play!");
 		detailLabel.setBorder(border);
-		
-		//create panel
+
+		// create panel
 		JPanel panelPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		panelPane.add(panelLabel);
-		
+
 		JPanel detailPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		detailPane.add(detailLabel);
-		
-		//add panel to views
-		dataPanel.add(panelPane);
-		dataList.add(detailPane);
-		
-	}
 
+		// add panel to views
+		dataPanel.add(panelPane);
+
+		dataList.add(detailPane);
+
+	}
 
 	@Override
 	public Component getListCellRendererComponent(JList list, Object val,
 			int index, boolean selected, boolean hasFocus) {
 		if (val instanceof JPanel) {
 			Component component = (Component) val;
-        	component.setForeground (Color.lightGray);
-        	component.setBackground (selected ? Color.darkGray: Color.lightGray);
+			component.setForeground(Color.lightGray);
+			component
+					.setBackground(selected ? Color.darkGray : Color.lightGray);
 			return component;
-	    } else {
-	      return new JLabel("???");
-	    }
+		} else {
+			return new JLabel("???");
+		}
 	}
-	
 
 }

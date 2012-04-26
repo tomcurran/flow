@@ -21,13 +21,11 @@ public class MediaPlayer extends Observable implements Observer {
 		STOP,
 		BUFFER,
 		PLAY,
-		PAUSE
+		PAUSE, 
+		RETURN
 	}
 
-	public enum Update {
-		STATE,
-		FRAME
-	}
+	
 
 	private STATE state;
 	private List<RTPpacket> buffer;

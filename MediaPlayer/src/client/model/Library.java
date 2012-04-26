@@ -9,17 +9,12 @@ import java.util.Observable;
 import java.util.Observer;
 
 import client.model.MediaPlayer.STATE;
-import client.model.MediaPlayer.Update;
+import client.model.Update;
 import client.model.xmlparser.XMLParser;
 
 public class Library extends Observable implements Observer {
 	
-	public enum Update {
-		SWITCHPANEL,
-		REFRESH, 
-		SELECTED, 
-		STATSON
-	}
+	
 	
 	private Update state;
 	private List<LibraryEntry> catalogue;
