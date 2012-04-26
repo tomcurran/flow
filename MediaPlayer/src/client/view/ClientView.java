@@ -15,16 +15,22 @@ import client.model.Library.Update;
 @SuppressWarnings("serial")
 public class ClientView extends JFrame implements Observer{
 
+//TODO Jamie, the commented sections here are for you stats magic. 
 	private JPanel contentPane;
 	
 	private LibraryView libraryView;
 	private MediaView mediaView;
+//	private StatsView statsView;
+	
 	private PlayerButtonView playerButtons;
 	private LibraryButtonView libraryButtons;
-
+//	private StatsButtonView statsButtons;
+	
 	private MediaController mediaController;
 	private LibraryController libraryController;
+//	private StatsController statsController;
 
+	//TODO pass in the stats controller. 
 	public ClientView(MediaController mediaController, LibraryController libraryController) {
 		super("Client");
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,7 +85,15 @@ public class ClientView extends JFrame implements Observer{
 			super.pack();
 			super.requestFocus();
 			super.repaint();
-		}else{
+		}else if (command == Update.STATSON){
+			//declare a panel for the graphs and the control sliders to be added.
+			JPanel statsPane = new JPanel(new BorderLayout());
+			statsPane.setPreferredSize(new Dimension(105, 55));
+			//add the statsView and statsButtons to the statsPane.
+			
+			//and the statsPane to the BorderLayou.EAST of the contentPane.
+			contentPane.add(statsPane, BorderLayout.EAST);
+		} else{
 			contentPane.removeAll();
 			contentPane.add(libraryView, BorderLayout.CENTER);
 			contentPane.add(libraryButtons, BorderLayout.NORTH);

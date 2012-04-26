@@ -16,12 +16,13 @@ public class Library extends Observable implements Observer {
 	
 	public enum Update {
 		SWITCHPANEL,
-		REFRESH, SELECTED
+		REFRESH, 
+		SELECTED, 
+		STATSON
 	}
 	
 	private Update state;
 	private List<LibraryEntry> catalogue;
-	private URL webserver;
 	private URL metaFile;
 	private final String metaFileExt = "/videos/database.xml";
 	private XMLParser xmlParser;
@@ -32,13 +33,11 @@ public class Library extends Observable implements Observer {
 		try {
 			System.out.println("server ip: " + serverIp.toString());
 			metaFile = new URL("http", serverIp.getHostAddress(), webServerPort, metaFileExt);
-			//metaFile = new URL(webserver, metaFileExt);
 			xmlParser = new XMLParser(metaFile, serverIp.getHostAddress(), webServerPort);
 			xmlParser.parseFile();
 			catalogue = xmlParser.getLibrary();
 			
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.err.println("Unable to establish connection with Web Server");
 		}
@@ -51,7 +50,6 @@ public class Library extends Observable implements Observer {
 	
 	public void setState(Update state) {
 		this.state = state;
-		System.out.println("State: " + state.toString());
 		this.setChanged();
 		this.notifyObservers(state);
 	}

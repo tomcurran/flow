@@ -13,7 +13,7 @@ import java.awt.Color;
 	 * @author jwb09119
 	 * @date 25/04/2012
 	 * 
-	 *Represents graphing data, obtained by observing an
+	 * Represents graphing data, obtained by observing an
 	 * updating data source (model)
 	 *
 	 */

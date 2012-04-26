@@ -115,6 +115,9 @@ public class MediaPlayer extends Observable implements Observer {
 	public void pause() {
 		switch (getState()) {
 		case STOP:
+			stopPlaying();
+			setState(STATE.STOP);
+			break;
 		case PAUSE:
 			break;
 		case PLAY:
@@ -134,6 +137,8 @@ public class MediaPlayer extends Observable implements Observer {
 			buffer.add(rtspClient.getPacket());
 			switch (getState()) {
 			case STOP:
+				stopPlaying();
+				break;
 			case PAUSE:
 				break;
 			case PLAY:
@@ -165,7 +170,7 @@ public class MediaPlayer extends Observable implements Observer {
 		setState(STATE.PLAY);
 	}
 
-	private void stopPlaying() {
+	public void stopPlaying() {
 		if (playHandle != null) {
 			playHandle.cancel(true);
 		}

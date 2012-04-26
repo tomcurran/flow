@@ -15,8 +15,6 @@ public class LibraryController {
 	public void updateLibrary(String actionCommand) {
 		if (actionCommand.equals("REFRESH")) { 
 			model.refresh(actionCommand);
-		} else if (actionCommand.equals("DOUBLECLICK")) {
-			//TODO start playing the media. 
 		}
 	}
 	

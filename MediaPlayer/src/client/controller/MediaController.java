@@ -3,6 +3,7 @@ package client.controller;
 import java.io.IOException;
 
 import client.model.MediaPlayer;
+import client.model.MediaPlayer.STATE;
 
 public class MediaController {
 
@@ -22,6 +23,9 @@ public class MediaController {
 			}
 		} else if (action.equals("PAUSE")) {
 			model.pause();
+		} else if (action.equals("STOP")) {
+			model.stopPlaying();
+			model.setState(STATE.STOP);
 		}
 	}
 	

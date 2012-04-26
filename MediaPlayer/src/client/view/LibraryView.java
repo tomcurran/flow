@@ -36,17 +36,19 @@ public class LibraryView extends JPanel implements Observer, ListCellRenderer {
 
 	private static final long serialVersionUID = 1L;
 	private LibraryController controller;
-	private boolean view;
+	private String currentView = "listView";
 	
 	private JScrollPane scrollpane;
 	private JList listView;
 	private JList panelView;
-	private List<Object> data;
+	private List<Object> dataList;
+	private List<Object> dataPanel;
 
 	public LibraryView(LibraryController libraryController) {
 		this.controller = libraryController;
 		this.controller.getModel().addObserver(this);
-		data = new ArrayList<Object>();
+		dataList = new ArrayList<Object>();
+		dataPanel = new ArrayList<Object>();
 		initialiseComponents();
 		initialiseListeners();
 	}
@@ -59,7 +61,21 @@ public class LibraryView extends JPanel implements Observer, ListCellRenderer {
 	            public void mouseClicked(MouseEvent e) {
 	                if (e.getClickCount() == 2) {
 	                	int index = listView.getSelectedIndex();
-	                	JPanel temp = (JPanel) data.get(index);
+	                	JPanel temp = (JPanel) dataPanel.get(index);
+	                	Component[] comps = temp.getComponents();
+	                	JLabel label = (JLabel) comps[0];
+	                	String media = label.getText();
+	                	controller.getModel().setSelected(media);
+	                	controller.getModel().setState(Update.SELECTED);
+	                }
+	            }
+	        });
+		 
+		 panelView.addMouseListener(new MouseAdapter() {
+	            public void mouseClicked(MouseEvent e) {
+	                if (e.getClickCount() == 2) {
+	                	int index = panelView.getSelectedIndex();
+	                	JPanel temp = (JPanel) dataPanel.get(index);
 	                	Component[] comps = temp.getComponents();
 	                	JLabel label = (JLabel) comps[0];
 	                	String media = label.getText();
@@ -87,7 +103,6 @@ public class LibraryView extends JPanel implements Observer, ListCellRenderer {
 		panelView.setBorder(new EmptyBorder(10, 10, 10, 10));
 		fillDisplay();
 		scrollpane.getViewport().setView(listView);
-		view = true;
 		this.add(scrollpane, BorderLayout.CENTER);
 		
 	}
@@ -95,7 +110,8 @@ public class LibraryView extends JPanel implements Observer, ListCellRenderer {
 
 
 	private void fillDisplay() {
-		data.clear();
+		dataList.clear();
+		dataPanel.clear();
 
 		Library model = controller.getModel();
 		List<LibraryEntry> entries = model.getLibrary();
@@ -104,11 +120,11 @@ public class LibraryView extends JPanel implements Observer, ListCellRenderer {
 			addMedia(libraryEntry);
 		}
 		
-		listView.setListData(data.toArray());
+		listView.setListData(dataList.toArray());
 		
 		panelView.setLayoutOrientation(JList.VERTICAL_WRAP);
         panelView.setVisibleRowCount(-1);
-		panelView.setListData(data.toArray());
+		panelView.setListData(dataPanel.toArray());
 		
 	}
 
@@ -131,12 +147,12 @@ public class LibraryView extends JPanel implements Observer, ListCellRenderer {
 	
 	private void switchPanel() {
 		fillDisplay();
-		if(view){
+		if(currentView.startsWith("panel")){
 			scrollpane.getViewport().setView(listView);
-			view = false;
+			currentView = "listView";
 		}else {
 			scrollpane.getViewport().setView(panelView);
-			view = true;
+			currentView = "panelView";
 		}
 		this.repaint();
 	}
@@ -151,22 +167,33 @@ public class LibraryView extends JPanel implements Observer, ListCellRenderer {
 		//create icon
 		Icon thumbnail = new ImageIcon(entry.getThumbnail());
 		
-		//create detail string
-		String details = entry.getLocation();
+		//create panel string
+		String panelString = entry.getLocation();
+		
+		//create detailViewString
+		String detailString = "Location: " + entry.getLocation() + "\n Period: " + entry.getPeriod()
+								+ "\n Type: " + entry.getType();
 		
 		//create Jlabel made of Icon and Detail String
 		Border border = LineBorder.createGrayLineBorder();
-		JLabel listing = new JLabel(details, thumbnail, JLabel.CENTER);
-		listing.setVerticalTextPosition(JLabel.BOTTOM);
-		listing.setHorizontalTextPosition(JLabel.CENTER);
-		listing.setBorder(border);
+		JLabel panelLabel = new JLabel(panelString, thumbnail, JLabel.CENTER);
+		panelLabel.setVerticalTextPosition(JLabel.BOTTOM);
+		panelLabel.setHorizontalTextPosition(JLabel.CENTER);
+		panelLabel.setBorder(border);
+		
+		JLabel detailLabel = new JLabel(detailString, thumbnail, JLabel.CENTER);
+		detailLabel.setBorder(border);
 		
 		//create panel
-		JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		panel.add(listing);
+		JPanel panelPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		panelPane.add(panelLabel);
+		
+		JPanel detailPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		detailPane.add(detailLabel);
 		
 		//add panel to views
-		data.add(panel);
+		dataPanel.add(panelPane);
+		dataList.add(detailPane);
 		
 	}
 
@@ -176,8 +203,8 @@ public class LibraryView extends JPanel implements Observer, ListCellRenderer {
 			int index, boolean selected, boolean hasFocus) {
 		if (val instanceof JPanel) {
 			Component component = (Component) val;
-        	component.setForeground (Color.white);
-        	component.setBackground (selected ? Color.lightGray: Color.white);
+        	component.setForeground (Color.lightGray);
+        	component.setBackground (selected ? Color.darkGray: Color.lightGray);
 			return component;
 	    } else {
 	      return new JLabel("???");

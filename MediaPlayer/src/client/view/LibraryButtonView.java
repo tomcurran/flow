@@ -20,7 +20,6 @@ public class LibraryButtonView extends JPanel implements Observer{
 		
     //The buttons. 
 	private JButton panelviewButton;
-	private JButton detailviewButton;
 	private JButton statsButton;
 	
 	//The Icons.
@@ -43,22 +42,18 @@ public class LibraryButtonView extends JPanel implements Observer{
 		
 		//Create JPanel for buttons. 
 		buttons = new JPanel();
-		buttons.setPreferredSize(new Dimension(300, 40));
+		buttons.setPreferredSize(new Dimension(300, 35));
 		
 		//Setup Icons.
 		panelIcon = new ImageIcon("images/icons/panelview.png");
-		detailIcon = new ImageIcon("images/icons/detailview/png");
+		detailIcon = new ImageIcon("images/icons/detailview.png");
 		statsIcon = new ImageIcon("images/icons/fishes.png");
 		
 		//SetupButtons.
 		panelviewButton = new JButton(panelIcon);
 		panelviewButton.setPreferredSize(new Dimension(30, 30));
 		panelviewButton.setActionCommand("PANELVIEW");
-		
-		detailviewButton = new JButton(detailIcon);
-		detailviewButton.setPreferredSize(new Dimension(30, 30));
-		detailviewButton.setActionCommand("DETAILVIEW");
-		
+	
 		statsButton = new JButton(statsIcon);
 		statsButton.setPreferredSize(new Dimension(30, 30));
 		statsButton.setActionCommand("STATS");
@@ -67,12 +62,10 @@ public class LibraryButtonView extends JPanel implements Observer{
 		bg = new ButtonGroup();
 		
 		bg.add(panelviewButton);
-		bg.add(detailviewButton);
 		bg.add(statsButton);
 		
 		//Add buttons to panel.
 		buttons.add(panelviewButton);
-		buttons.add(detailviewButton);
 		buttons.add(statsButton);
 		
 		//add to this panel.
@@ -86,15 +79,17 @@ public class LibraryButtonView extends JPanel implements Observer{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				controller.switchview(panelviewButton.getActionCommand());
+				if(panelviewButton.getActionCommand().startsWith("PANEL")){
+					panelviewButton.setIcon(detailIcon);
+					panelviewButton.setActionCommand("DETAILVIEW");
+				} else{
+					panelviewButton.setIcon(panelIcon);
+					panelviewButton.setActionCommand("PANELVIEW");
+				}
 			}
 		});
 		
-		detailviewButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				controller.switchview(detailviewButton.getActionCommand());
-			}
-		});
+		
 		
 		statsButton.addActionListener(new ActionListener() {
 			@Override
@@ -106,16 +101,12 @@ public class LibraryButtonView extends JPanel implements Observer{
 	}
 
 	private void updateGUI() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	

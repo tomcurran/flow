@@ -1,13 +1,13 @@
 <videos>
 	<video>
-		<location>videos/movie1.mjpeg</location>
+		<location>movie1.mjpeg</location>
 		<length>500</length>
 		<period>100</period>
 		<type>26</type>
 		<thumbnail>/thumbnails/tnmovie1.png</thumbnail>
 	</video>
 	<video>
-		<location>videos/movie2.mjpeg</location>
+		<location>movie2.mjpeg</location>
 		<length>500</length>
 		<period>100</period>
 		<type>26</type>
