@@ -118,7 +118,7 @@ public class ClientView extends JFrame implements Observer {
 	
 	public void setStats() {
 		// TODO Jamie! Setting stat stuff goes here!
-		
+		System.out.println("Stats!");
 	}
 
 }
