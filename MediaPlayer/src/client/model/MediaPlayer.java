@@ -14,6 +14,7 @@ import java.util.concurrent.ScheduledFuture;
 
 import server.rtsp.model.RTPpacket;
 import client.rtsp.model.ClientModel;
+import client.statistics.InboundLoggingController;
 
 public class MediaPlayer extends Observable implements Observer {
 
@@ -36,6 +37,7 @@ public class MediaPlayer extends Observable implements Observer {
 	private InetAddress serverIp;
 	private int rtspServerPort;
 
+	private InboundLoggingController logger;
 	private ScheduledExecutorService scheduler;
 	private ScheduledFuture<?> playHandle;
 	private final Runnable play = new Runnable() {
@@ -54,6 +56,7 @@ public class MediaPlayer extends Observable implements Observer {
 		scheduler = Executors.newScheduledThreadPool(1);
 		this.serverIp = serverIp;
 		this.rtspServerPort = rtspServerPort;
+		logger = InboundLoggingController.getInstance();
 		
 	}
 
@@ -160,6 +163,7 @@ public class MediaPlayer extends Observable implements Observer {
 			currentFrame++;
 			this.setChanged();
 			this.notifyObservers(Update.FRAME);
+			logger.logFramePlayed();
 		}
 	}
 

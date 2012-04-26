@@ -9,9 +9,13 @@ public class GraphTest{
 		
 
 		    	
-				GraphTestModel model = new GraphTestModel();
-				LineGraphPanel graph = new LineGraphPanel(new Dimension(100, 50), model);
-				GraphTestClient client = new GraphTestClient(graph);
+				LineGraphTestModel modelA = new LineGraphTestModel();
+				LineGraphPanel graphA = new LineGraphPanel(new Dimension(100, 50), modelA);
+				GraphTestClient clientA = new GraphTestClient(graphA);
+				
+				LagGraphTestModel modelB = new LagGraphTestModel();
+				LagGraphPanel graphB = new LagGraphPanel(new Dimension(300, 100), modelB);
+				GraphTestClient clientB = new GraphTestClient(graphB);
 				
 				model.run();
 

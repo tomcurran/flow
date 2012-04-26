@@ -7,6 +7,9 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JPanel;
+
+import client.statistics.tests.LineGraphViewmodel;
+
 import java.awt.Color;
 
 	/**
@@ -19,14 +22,14 @@ import java.awt.Color;
 	 */
 
 public class LineGraphPanel extends JPanel implements Observer{
-	private StatsViewmodel viewModel;
+	private LineGraphViewmodel viewModel;
 	private final Color BACKGROUND = Color.BLACK;
 	private final Color[] LINES = {Color.RED, Color.BLUE, Color.YELLOW};
 	
 	private int[] lineData;
 	
 	public LineGraphPanel(Dimension size, Observable model) {
-		viewModel = new StatsViewmodel(model);
+		viewModel = new LineGraphViewmodel(model);
 		viewModel.addObserver(this);
 		
 		lineData = new int[100];

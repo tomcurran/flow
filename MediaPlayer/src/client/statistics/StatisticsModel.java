@@ -1,8 +1,12 @@
 package client.statistics;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.Observable;
 import java.util.Queue;
+
+import javax.swing.Timer;
 
 import server.rtsp.model.RTPpacket;
 
@@ -19,9 +23,10 @@ import server.rtsp.model.RTPpacket;
 	 *           use when calculating delay.  Can we change or add an actual departure time?
 	 */
 
-public class StatisticsModel extends Observable{
+public class StatisticsModel extends Observable implements ActionListener{
 	private static final int LOG_SIZE = 10; // Number of packets to store in history for stat calculation
 	InboundLoggingController logger;
+	Timer clock;
 	
 	// Book keeping
 	RTPpacket lastPacket;
@@ -39,13 +44,23 @@ public class StatisticsModel extends Observable{
 	Queue<Integer> packetDelays;
 	Queue<Integer> packetJitters;
 	Queue<Integer> packetArrivalTimes;
+	
+	//Lag chart data
+	int packetsReceived; //
+	int packetsPlayed; //
+	
+	Queue<Integer> packetsRecieved;
 
 	
 	// Constructor
-	public StatisticsModel() {
+	public StatisticsModel(){
+		clock = new Timer(200, this); // Updates observers periodically
 		packetDelays = new LinkedList<Integer>();
 		packetJitters = new LinkedList<Integer>();
 		packetArrivalTimes = new LinkedList<Integer>();
+		
+		packetsReceived = 0;
+		packetsPlayed = 0; 
 		
 		logger = InboundLoggingController.getInstance();
 		logger.setModel(this);
@@ -59,6 +74,7 @@ public class StatisticsModel extends Observable{
 	 * Log a packet received by the client
 	 */
 	protected void logPacketReceived(RTPpacket packet, int arrivalTime) {
+		packetsReceived++;
 		if (packetArrivalTimes.size() > LOG_SIZE) {
 			packetArrivalTimes.poll();
 		}
@@ -70,11 +86,13 @@ public class StatisticsModel extends Observable{
 			
 		//finally
 		lastPacket = packet;
-		lastPacketArrivalTime = arrivalTime;	
+		lastPacketArrivalTime = arrivalTime;
 		lastPacketSequenceNumber = packet.getSequenceNumber();
-		
-		this.setChanged();
-		this.notifyObservers();
+	}
+	
+	
+	protected void logFrameExitFromBuffer() {
+		packetsPlayed++;
 	}
 	
 	
@@ -108,7 +126,7 @@ public class StatisticsModel extends Observable{
 	private void recalculateArrivalRate(int arrivalTime) {
 		int numberOfPackets=packetArrivalTimes.size();
 		float totalTime = lastPacketArrivalTime - packetArrivalTimes.peek();
-		float packetsPerSecond = numberOfPackets / (totalTime / 1000); // milliseconds
+		packetArrivalRate = (int) (numberOfPackets / (totalTime / 1000)); // milliseconds
 	}
 	
 	
@@ -129,6 +147,14 @@ public class StatisticsModel extends Observable{
 			total += i;
 		}
 		packetJitterAverage = total/size;
+	}
+
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		this.setChanged();
+		this.notifyObservers();
+		
 	}
 	
 }

@@ -10,8 +10,13 @@ import javax.swing.JPanel;
 
 import client.controller.LibraryController;
 import client.controller.MediaController;
+
+import client.model.Update;
+import client.statistics.*;
+
 import client.model.MediaPlayer.STATE;
 import client.model.Update;
+
 
 @SuppressWarnings("serial")
 public class ClientView extends JFrame implements Observer {
@@ -21,11 +26,23 @@ public class ClientView extends JFrame implements Observer {
 
 	private LibraryView libraryView;
 	private MediaView mediaView;
+	
+	// Stats stuff
+	private LineGraphPanel delayGraphPanel;
+	private LineGraphViewmodel delayGraphViewmodel;
+	
+	private LineGraphPanel jitterGraphPanel;
+	private LineGraphViewmodel jitterGraphViewmodel;
+	
+	private LagGraphPanel lagGraphPanel;
+	private LagGraphViewmodel lagGraphViewmodel;
+	
 	// private StatsView statsView;
 
 	private PlayerButtonView playerButtons;
 	private LibraryButtonView libraryButtons;
 	// private StatsButtonView statsButtons;
+
 
 	private MediaController mediaController;
 	private LibraryController libraryController;
@@ -92,12 +109,9 @@ public class ClientView extends JFrame implements Observer {
 		} else if (command == Update.STATSON) {
 			// declare a panel for the graphs and the control sliders to be
 			// added.
-			JPanel statsPane = new JPanel(new BorderLayout());
-			statsPane.setPreferredSize(new Dimension(105, 55));
-			// add the statsView and statsButtons to the statsPane.
-
-			// and the statsPane to the BorderLayou.EAST of the contentPane.
-			contentPane.add(statsPane, BorderLayout.EAST);
+			
+			
+			
 		} else if (command == Update.STATE) {
 			if (mediaController.getModel().getState() == STATE.RETURN) {
 
@@ -118,7 +132,25 @@ public class ClientView extends JFrame implements Observer {
 	
 	public void setStats() {
 		// TODO Jamie! Setting stat stuff goes here!
-		System.out.println("Stats!");
+
+		JPanel statsPane = new JPanel(new BorderLayout());
+		statsPane.setPreferredSize(new Dimension(105, 55));
+		
+		//add the statsView and statsButtons to the statsPane.
+		StatisticsModel statsModel = InboundLoggingController.getInstance().getStatisticsModel();
+		delayGraphViewmodel = new LineGraphViewmodel(statsModel);
+		delayGraphPanel = new LineGraphPanel(new Dimension(300,100), delayGraphViewmodel);
+		statsPane.add(delayGraphPanel);
+		
+		jitterGraphViewmodel = new LineGraphViewmodel(statsModel);
+		jitterGraphPanel = new LineGraphPanel(new Dimension(300,100), jitterGraphViewmodel);
+		statsPane.add(jitterGraphPanel);
+		
+		lagGraphViewmodel = new LagGraphViewmodel(statsModel);
+		lagGraphPanel = new LagGraphPanel(new Dimension(300, 200), lagGraphViewmodel);
+		
+		contentPane.add(statsPane, BorderLayout.EAST);
+
 	}
 
 }
