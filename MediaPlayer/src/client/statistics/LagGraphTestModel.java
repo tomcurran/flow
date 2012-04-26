@@ -23,6 +23,12 @@ class LagGraphTestModel extends Observable implements ActionListener{
 		packetsRecieved = new LinkedList<Integer>();
 		packetsPlayed = new LinkedList<Integer>();
 		
+		for(int i = 0; i < 100; i++) {
+			packetsSent.add(0);
+			packetsRecieved.add(0);
+			packetsPlayed.add(0);
+		}
+		
 		random = new Random();
 		clock = new Timer(500, this);
 		
@@ -33,6 +39,11 @@ class LagGraphTestModel extends Observable implements ActionListener{
 		int alreadyPlayed = 0;
 		for(int i = 0; i < 100; i++) {
 			sent++;
+			
+			while(packetsSent.size() > 99) {
+				packetsSent.poll();
+			}
+			
 			packetsSent.add(sent);
 			inTransit++;
 			
@@ -40,15 +51,20 @@ class LagGraphTestModel extends Observable implements ActionListener{
 				inTransit--;
 				recieved++;
 			}
-			packetsRecieved.add(recieved);
 			
+			while(packetsRecieved.size() > 99) {
+				packetsRecieved.poll();
+			}
+			packetsRecieved.add(recieved);
 
 			buffered = recieved - alreadyPlayed;
 			if(buffered > 10) {
 				alreadyPlayed++;
 			}
+			while(packetsPlayed.size() > 99) {
+				packetsPlayed.poll();
+			}
 			packetsPlayed.add(alreadyPlayed);
-			
 		}
 		
 	}
@@ -63,25 +79,25 @@ class LagGraphTestModel extends Observable implements ActionListener{
 	protected int[][] getData(){
 		
 		int[][] reply = new int[3][100];
-		int count = 0;
+		int count = 99;
 		
 		for (Integer i : packetsSent) {
 			reply[0][count] = i;
-			count++;
+			count--;
 		}
 		
-		count = 0;
+		count = 99;
 		
 		for (Integer i : packetsRecieved) {
 			reply[1][count] = i;
-			count++;
+			count--;
 		}
 		
-		count = 0;
+		count = 99;
 		
 		for (Integer i : packetsPlayed) {
 			reply[2][count] = i;
-			count++;
+			count--;
 		}
 		
 		return reply;
@@ -90,8 +106,7 @@ class LagGraphTestModel extends Observable implements ActionListener{
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		//rawData.poll();
-		//rawData.add(random.nextInt(500));  STATIC FOR NOW - MOVING LATER
+
 		this.setChanged();
 		this.notifyObservers(getData());
 	}

@@ -21,9 +21,12 @@ public class LagGraphViewmodel extends Observable implements Observer{
 	
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		int[] data = ((int[]) arg1);
+		int[][] data = ((int[][]) arg1);
 		
-		data = processData(data);
+		for (int i = 0; i < data.length; i++) {
+			data[i] = processData(data[i]);
+		}
+		
 		
 		this.setChanged();
 		this.notifyObservers(data);

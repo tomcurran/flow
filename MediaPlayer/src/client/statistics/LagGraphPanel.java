@@ -64,17 +64,68 @@ public class LagGraphPanel extends JPanel implements Observer{
 		float widthScale = ((float) this.getWidth())/size;
 		float heightScale = ((float) this.getHeight())/100;
 		
-		int[] lastSent = {((int) 0), ((int) (sentData[0]*heightScale))};
+
 		int[] lastRecieved = {((int) 0), ((int) (recievedData[0]*heightScale))};
 		int[] lastPlayed = {((int) 0), ((int) (playedData[0]*heightScale))};
 		
+		// Draw sent line
+		g.setColor(LINES[0]);
+		int lastY = (int) (sentData[0]*heightScale);
+		int lastX = 0;
 		for (int i = 1; i < size; i++) {
-			int newX = ((int) (lastSent[0] + widthScale));
-			int newY = ((int) (lastSent[i]*heightScale));
-			g.drawLine(lastSent[0], lastSent[1], newX, newY);
-			lastSent[0] = newX;
-			lastSent[1] = newY;
+			
+			int newBarXStart = lastX;
+			int newBarYStart = (int) (sentData[i]*heightScale);
+			int newBarXEnd = (int) (lastX + widthScale);
+			int newBarYEnd = newBarYStart;
+			
+			g.drawLine(lastX, lastY, newBarXStart, newBarYStart);
+			g.drawLine(newBarXStart, newBarYStart, newBarXEnd, newBarYEnd);
+			
+			lastX = newBarXEnd;
+			lastY = newBarYEnd;
+			
 		}
+		
+		// Draw received line
+		g.setColor(LINES[1]);
+		lastY = (int) (recievedData[0]*heightScale);
+		lastX = 0;
+		for (int i = 1; i < size; i++) {
+			
+			int newBarXStart = lastX;
+			int newBarYStart = (int) (recievedData[i]*heightScale);
+			int newBarXEnd = (int) (lastX + widthScale);
+			int newBarYEnd = newBarYStart;
+			
+			g.drawLine(lastX, lastY, newBarXStart, newBarYStart);
+			g.drawLine(newBarXStart, newBarYStart, newBarXEnd, newBarYEnd);
+			
+			lastX = newBarXEnd;
+			lastY = newBarYEnd;
+			
+		}
+		
+		// Draw played line
+		g.setColor(LINES[2]);
+		lastY = (int) (playedData[0]*heightScale);
+		lastX = 0;
+		for (int i = 1; i < size; i++) {
+			
+			int newBarXStart = lastX;
+			int newBarYStart = (int) (playedData[i]*heightScale);
+			int newBarXEnd = (int) (lastX + widthScale);
+			int newBarYEnd = newBarYStart;
+			
+			g.drawLine(lastX, lastY, newBarXStart, newBarYStart);
+			g.drawLine(newBarXStart, newBarYStart, newBarXEnd, newBarYEnd);
+			
+			lastX = newBarXEnd;
+			lastY = newBarYEnd;
+			
+		}
+		
+		
 	}
 
 	@Override

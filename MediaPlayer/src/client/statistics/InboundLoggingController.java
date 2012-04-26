@@ -44,6 +44,10 @@ public class InboundLoggingController{
 		model.logPacketReceived(packet, arrivalTime);
 	}
 	
+	public void logFramePlayed(){
+		model.logFrameExitFromBuffer();
+	}
+	
 	
 	protected void setModel(StatisticsModel model) {
 		this.model = model;
