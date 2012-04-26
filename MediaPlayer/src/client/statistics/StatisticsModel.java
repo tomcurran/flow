@@ -70,7 +70,7 @@ public class StatisticsModel extends Observable{
 			
 		//finally
 		lastPacket = packet;
-		lastPacketArrivalTime = arrivalTime;	
+		lastPacketArrivalTime = arrivalTime;
 		lastPacketSequenceNumber = packet.getSequenceNumber();
 		
 		this.setChanged();
