@@ -11,6 +11,12 @@ import javax.swing.JPanel;
 import client.controller.LibraryController;
 import client.controller.MediaController;
 import client.model.Library.Update;
+import client.statistics.InboundLoggingController;
+import client.statistics.LagGraphPanel;
+import client.statistics.LagGraphViewmodel;
+import client.statistics.LineGraphPanel;
+import client.statistics.StatisticsModel;
+import client.statistics.tests.LineGraphViewmodel;
 
 @SuppressWarnings("serial")
 public class ClientView extends JFrame implements Observer{
@@ -20,15 +26,23 @@ public class ClientView extends JFrame implements Observer{
 	
 	private LibraryView libraryView;
 	private MediaView mediaView;
-//	private StatsView statsView;
+	
+	// Stats stuff
+	private LineGraphPanel delayGraphPanel;
+	private LineGraphViewmodel delayGraphViewmodel;
+	
+	private LineGraphPanel jitterGraphPanel;
+	private LineGraphViewmodel jitterGraphViewmodel;
+	
+	private LagGraphPanel lagGraphPanel;
+	private LagGraphViewmodel lagGraphViewmodel;
+	
 	
 	private PlayerButtonView playerButtons;
 	private LibraryButtonView libraryButtons;
-//	private StatsButtonView statsButtons;
 	
 	private MediaController mediaController;
 	private LibraryController libraryController;
-//	private StatsController statsController;
 
 	//TODO pass in the stats controller. 
 	public ClientView(MediaController mediaController, LibraryController libraryController) {
@@ -89,7 +103,19 @@ public class ClientView extends JFrame implements Observer{
 			//declare a panel for the graphs and the control sliders to be added.
 			JPanel statsPane = new JPanel(new BorderLayout());
 			statsPane.setPreferredSize(new Dimension(105, 55));
+			
 			//add the statsView and statsButtons to the statsPane.
+			StatisticsModel statsModel = InboundLoggingController.getInstance().getStatisticsModel();
+			delayGraphViewmodel = new LineGraphViewmodel(statsModel);
+			delayGraphPanel = new LineGraphPanel(new Dimension(300,100), delayGraphViewmodel);
+			statsPane.add(delayGraphPanel);
+			
+			jitterGraphViewmodel = new LineGraphViewmodel(statsModel);
+			jitterGraphPanel = new LineGraphPanel(new Dimension(300,100), jitterGraphViewmodel);
+			statsPane.add(jitterGraphPanel);
+			
+			lagGraphViewmodel = new LagGraphViewmodel(statsModel);
+			lagGraphPanel = new LagGraphPanel(new Dimension(300, 200), lagGraphViewmodel);
 			
 			//and the statsPane to the BorderLayou.EAST of the contentPane.
 			contentPane.add(statsPane, BorderLayout.EAST);

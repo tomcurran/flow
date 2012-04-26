@@ -5,6 +5,8 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
+import client.statistics.InboundLoggingController;
+
 import server.rtsp.model.RTPpacket;
 
 
@@ -32,7 +34,9 @@ public class RTPTransport {
 		DatagramPacket dataPacket = new DatagramPacket(buffer, buffer.length);	// Construct a DatagramPacket to receive data from the UDP socket
 		socket.receive(dataPacket);												// receive the DP from the socket
 		RTPpacket rtpPacket = new RTPpacket(dataPacket.getData(), dataPacket.getLength());		// create an RTPpacket object from the DP
-
+		
+		//TODO - check this is the best place to have this logging even
+		InboundLoggingController.getInstance().logPacketReceipt(null, (int) System.currentTimeMillis());
 		// print important header fields of the RTP packet received
 //		System.out.printf("Got RTP packet with SeqNum #%d TimeStamp %d ms, of type %d\n",
 //				rtpPacket.getSequenceNumber(), rtpPacket.getTimeStamp(), rtpPacket.getPayloadType());

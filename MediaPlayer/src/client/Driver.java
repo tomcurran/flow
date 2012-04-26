@@ -14,6 +14,8 @@ import client.controller.LibraryController;
 import client.controller.MediaController;
 import client.model.Library;
 import client.model.MediaPlayer;
+import client.statistics.InboundLoggingController;
+import client.statistics.StatisticsModel;
 import client.view.ClientView;
 
 
@@ -23,6 +25,11 @@ public class Driver {
 
 	public static void main(String[] args) {
 
+		// Statistical logging classes
+		StatisticsModel statsLogger = new StatisticsModel();
+		InboundLoggingController logger = InboundLoggingController.getInstance();
+		logger.setModel(statsLogger);
+		
 		if (args.length != 4) {
 			System.err.printf("RTSP server host name, listening port and video file required\n");
 			System.err.printf("Useage: %s\n", USEAGE);

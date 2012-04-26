@@ -14,7 +14,7 @@ public class RTPpacket {
 	private int headerPayloadType;
 	private int headerSequenceNumber;
 	private int headerTimeStamp;
-	private int headerSsrc;
+	private int headerSsrc; // NB - this is being used for 'outbound' time!
 
 	private byte[] header;		// Bitstream of the header
 	private byte[] payload;		// Bitstream of the payload
@@ -30,7 +30,7 @@ public class RTPpacket {
 		headerExtension = 0;
 		headerCC = 0;
 		headerMarker = 0;
-		headerSsrc = 0;
+		headerSsrc = (int) System.currentTimeMillis();
 	}
 
 	/**
@@ -93,6 +93,7 @@ public class RTPpacket {
 			headerPayloadType = header[1] & 127;
 			headerSequenceNumber = unsignedInt(header[3]) + 256 * unsignedInt(header[2]);
 			headerTimeStamp = unsignedInt(header[7]) + 256 * unsignedInt(header[6]) + 65536 * unsignedInt(header[5]) + 16777216 * unsignedInt(header[4]);
+			headerSsrc = unsignedInt(header[8]) + 256 * unsignedInt(header[8]) + 65536 * unsignedInt(header[10]) + 16777216 * unsignedInt(header[11]);
 		}
 	}
 
@@ -177,6 +178,12 @@ public class RTPpacket {
 	 */
 	public static int unsignedInt(int i) {
 		return i >= 0 ? i : 256 + i;
+	}
+	
+	
+	// This is being used as a time stamp
+	public int getHeaderSsrc () {
+		return headerSsrc;
 	}
 
 }
