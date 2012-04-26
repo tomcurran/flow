@@ -9,6 +9,7 @@ import javax.swing.SwingUtilities;
 import client.rtsp.controller.ClientController;
 import client.rtsp.model.ClientModel;
 import client.rtsp.view.ClientView;
+import client.statistics.StatisticsModel;
 
 
 public class Driver {
@@ -16,6 +17,8 @@ public class Driver {
 	private static final String USEAGE = "java Client [Server hostname] [Server RTSP listening port] [Video file requested]";
 
 	public static void main(String[] args) {
+		
+		final StatisticsModel statsLogger = new StatisticsModel();
 
 		if (args.length != 3) {
 			System.err.printf("RTSP server host name, listening port and video file required\n");
@@ -46,7 +49,7 @@ public class Driver {
 
 		ClientModel model = null;
 		try {
-			model = new ClientModel(videoName, serverIp, rtspServerPort);
+			model = new ClientModel(videoName, serverIp, rtspServerPort, statsLogger);
 		} catch (IOException e) {
 			System.err.printf("I/O exception connecting to RTSP server: %s\n", e.getMessage());
 			System.exit(0);

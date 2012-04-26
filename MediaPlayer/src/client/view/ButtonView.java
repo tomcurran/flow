@@ -12,7 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import client.controller.MediaController;
-import client.model.MediaPlayer.Update;
+import client.model.Update;
 
 @SuppressWarnings("serial")
 public class ButtonView extends JPanel implements Observer {

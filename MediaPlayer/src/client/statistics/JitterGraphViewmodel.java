@@ -1,5 +1,6 @@
 package client.statistics;
 
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -12,21 +13,36 @@ import java.util.Observer;
 	 */
 
 public class JitterGraphViewmodel extends Observable implements Observer{
-	 
+	StatisticsModel model;
+	int[] data;
+	
 	// Constructor
 	public JitterGraphViewmodel (Observable model) {
 		model.addObserver(this);
+		this.model = (StatisticsModel) model;
+		
 	}
 
 	
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		int[] data = ((int[]) arg1);
+		List<Integer> rawData = model.getJitterData();
+
+		int size = rawData.size();
 		
-		data = processData(data);
-		
-		this.setChanged();
-		this.notifyObservers(data);
+		if (size > 0) {
+			data = new int[size];
+			
+			int count = rawData.size();
+			for (int i : rawData) {
+				data[size-count] = i;
+			}
+			
+			data = processData(data);
+			
+			this.setChanged();
+			this.notifyObservers(data);
+		}
 		
 	}
 	
@@ -39,8 +55,8 @@ public class JitterGraphViewmodel extends Observable implements Observer{
 		
 		int size = reply.length;
 		for (int i = 0; i < size; i++) {
-			float source = array[i];
-			reply[i] = ((int)((source/max) * 100));
+			int source = array[i];
+			reply[i] = ((source/max) * 100);
 		}
 		
 		return reply;
@@ -58,7 +74,11 @@ public class JitterGraphViewmodel extends Observable implements Observer{
 				reply = candidate;
 			}
 		}
-
+		// TODO - zero graph flatlines
+		if (reply < 10) {
+			reply = 100;
+		}
+		
 		return reply;
 	}
 }

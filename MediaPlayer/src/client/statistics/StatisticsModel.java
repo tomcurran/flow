@@ -3,6 +3,7 @@ package client.statistics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Queue;
 
@@ -25,7 +26,6 @@ import server.rtsp.model.RTPpacket;
 
 public class StatisticsModel extends Observable implements ActionListener{
 	private static final int LOG_SIZE = 10; // Number of packets to store in history for stat calculation
-	InboundLoggingController logger;
 	Timer clock;
 	
 	// Book keeping
@@ -62,42 +62,50 @@ public class StatisticsModel extends Observable implements ActionListener{
 		packetsReceived = 0;
 		packetsPlayed = 0; 
 		
-		logger = InboundLoggingController.getInstance();
-		logger.setModel(this);
 		lastPacketArrivalTime = 0;
+		packetArrivalRate = 0;
 		packetDelays.add(0);
 		packetJitters.add(0);
+		
+		clock.start();
 	}
 
 	
 	/*
 	 * Log a packet received by the client
 	 */
-	protected void logPacketReceived(RTPpacket packet, int arrivalTime) {
+	public void logPacketReceived(RTPpacket packet, int arrivalTime) {
+		System.out.println("got to here1");
 		packetsReceived++;
 		if (packetArrivalTimes.size() > LOG_SIZE) {
 			packetArrivalTimes.poll();
 		}
+		System.out.println("got to here2");
 		packetArrivalTimes.add(arrivalTime);
 		
 		logPacketDelay(arrivalTime, packet.getHeaderSsrc());
 		logPacketSequence(arrivalTime, packet.getSequenceNumber());
+		System.out.println("got to here3");
 		recalculateArrivalRate(arrivalTime);
-			
+		System.out.println("got to here4");
+		
 		//finally
 		lastPacket = packet;
 		lastPacketArrivalTime = arrivalTime;
 		lastPacketSequenceNumber = packet.getSequenceNumber();
+		
 	}
 	
 	
-	protected void logFrameExitFromBuffer() {
+	public void logFrameExitFromBuffer() {
 		packetsPlayed++;
 	}
 	
 	
 	private void logPacketDelay(int arrivalTime, int timeStamp) {
+		System.out.println("Arrive: "+arrivalTime + " Timestamp "+ timeStamp);
 		int newDelay = arrivalTime - timeStamp;
+		System.out.println("New Delay: " + newDelay);
 		
 		if (packetDelays.size() > LOG_SIZE) {
 			packetDelays.poll();
@@ -125,15 +133,23 @@ public class StatisticsModel extends Observable implements ActionListener{
 	
 	private void recalculateArrivalRate(int arrivalTime) {
 		int numberOfPackets=packetArrivalTimes.size();
-		float totalTime = lastPacketArrivalTime - packetArrivalTimes.peek();
-		packetArrivalRate = (int) (numberOfPackets / (totalTime / 1000)); // milliseconds
+		
+		if(numberOfPackets == 1){
+			return;
+		}
+		int totalTime = lastPacketArrivalTime - packetArrivalTimes.peek();
+		System.out.println("totaltime "+totalTime+" numberofp: " + numberOfPackets);
+		packetArrivalRate = (int) (numberOfPackets / (((double)totalTime) / 1000)); // milliseconds
+		System.out.println("packetarrivalrate: "+packetArrivalDelay);
+		
+
 	}
 	
 	
 	private void recalculatePacketArrivalDelays() {
 		int total = 0;
 		int size = packetDelays.size();
-		for(Integer i : packetDelays) {
+		for(int i : packetDelays) {
 			total += i;
 		}
 		packetArrivalDelay = total/size;
@@ -143,18 +159,37 @@ public class StatisticsModel extends Observable implements ActionListener{
 	private void recalculatePacketJitters(){
 		int total = 0;
 		int size = packetJitters.size();
-		for(Integer i : packetJitters) {
+		for(int i : packetJitters) {
 			total += i;
 		}
 		packetJitterAverage = total/size;
 	}
 
+	
+	protected int getPacketsReceived(){
+		return packetsReceived;
+	}
+	
+	
+	protected int getPacketsPlayed(){
+		return packetsPlayed;
+	}
+	
+	
+	protected List<Integer> getJitterData(){
+		return (List<Integer>) packetJitters;
+	}
+	
+	
+	protected List<Integer> getDelayData(){
+		return (List<Integer>) packetDelays;
+	}
+	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		this.setChanged();
 		this.notifyObservers();
-		
 	}
 	
 }

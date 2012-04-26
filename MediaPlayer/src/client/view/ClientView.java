@@ -3,7 +3,6 @@ package client.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -12,12 +11,14 @@ import javax.swing.JPanel;
 
 import client.controller.LibraryController;
 import client.controller.MediaController;
-
-import client.model.Update;
-import client.statistics.*;
-
 import client.model.MediaPlayer.STATE;
 import client.model.Update;
+import client.statistics.DelayGraphPanel;
+import client.statistics.JitterGraphPanel;
+import client.statistics.LagGraphPanel;
+import client.statistics.StatisticsModel;
+import client.statistics.tests.LineGraphPanel;
+
 
 
 @SuppressWarnings("serial")
@@ -30,21 +31,15 @@ public class ClientView extends JFrame implements Observer {
 	private MediaView mediaView;
 	
 	// Stats stuff
-	private LineGraphPanel delayGraphPanel;
-	private LineGraphViewmodel delayGraphViewmodel;
-	
-	private LineGraphPanel jitterGraphPanel;
-	private LineGraphViewmodel jitterGraphViewmodel;
-	
+	private StatisticsModel statsLogger;
+	private DelayGraphPanel delayGraphPanel;
+	private JitterGraphPanel jitterGraphPanel;
 	private LagGraphPanel lagGraphPanel;
-	private LagGraphViewmodel lagGraphViewmodel;
-	
-	// private StatsView statsView;
 
 	private PlayerButtonView playerButtons;
 	private LibraryButtonView libraryButtons;
 	// private StatsButtonView statsButtons;
-
+	private JPanel statsPane;
 
 	private MediaController mediaController;
 	private LibraryController libraryController;
@@ -54,13 +49,14 @@ public class ClientView extends JFrame implements Observer {
 
 	// TODO pass in the stats controller.
 	public ClientView(MediaController mediaController,
-			LibraryController libraryController) {
+			LibraryController libraryController, StatisticsModel statsLogger) {
 		super("Client");
 		super.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.mediaController = mediaController;
 		this.mediaController.getModel().addObserver(this);
 		this.libraryController = libraryController;
 		this.libraryController.getModel().addObserver(this);
+		this.statsLogger = statsLogger;
 		initialiseComponents();
 		initilaiseListeners();
 	}
@@ -81,7 +77,7 @@ public class ClientView extends JFrame implements Observer {
 		contentPane.setPreferredSize(new Dimension(380, 280));
 		contentPane.add(libraryView, BorderLayout.CENTER);
 		contentPane.add(libraryButtons, BorderLayout.NORTH);
-
+		statsPane = new JPanel(new BorderLayout());
 		super.setContentPane(contentPane);
 		super.setMinimumSize(new Dimension(390, 370));
 
@@ -140,25 +136,28 @@ public class ClientView extends JFrame implements Observer {
 		}
 	}
 
-	JPanel statsPane = new JPanel(new BorderLayout());
+	
 	public void setStats() {
+		
 		// TODO Jamie! Setting stat stuff goes here!
 		if(statsOn == false){
 			
-			statsPane.setPreferredSize(new Dimension(300, 400));
+
+			
+			statsPane.setPreferredSize(new Dimension(300, 300));
 			
 			//add the statsView and statsButtons to the statsPane.
-			StatisticsModel statsModel = InboundLoggingController.getInstance().getStatisticsModel();
-			delayGraphViewmodel = new LineGraphViewmodel(statsModel);
-			delayGraphPanel = new LineGraphPanel(new Dimension(300,100), delayGraphViewmodel);
-			statsPane.add(delayGraphPanel, BorderLayout.CENTER);
-			
-			jitterGraphViewmodel = new LineGraphViewmodel(statsModel);
-			jitterGraphPanel = new LineGraphPanel(new Dimension(300,100), jitterGraphViewmodel);
-			statsPane.add(jitterGraphPanel, BorderLayout.SOUTH);
-			
-			lagGraphViewmodel = new LagGraphViewmodel(statsModel);
-			lagGraphPanel = new LagGraphPanel(new Dimension(300, 200), lagGraphViewmodel);
+
+			Dimension chartSize = new Dimension(300,100);
+			delayGraphPanel = new DelayGraphPanel(chartSize, statsLogger);
+			delayGraphPanel.setPreferredSize(chartSize);
+			statsPane.add(delayGraphPanel, BorderLayout.NORTH);
+			jitterGraphPanel = new JitterGraphPanel(chartSize, statsLogger);
+			jitterGraphPanel.setPreferredSize(chartSize);
+			statsPane.add(jitterGraphPanel, BorderLayout.CENTER);
+			lagGraphPanel = new LagGraphPanel(chartSize, statsLogger);
+			lagGraphPanel.setPreferredSize(chartSize);
+			statsPane.add(lagGraphPanel, BorderLayout.SOUTH);
 			
 			contentPane.add(statsPane, BorderLayout.EAST);
 			super.setMinimumSize(new Dimension(700, 370));
@@ -168,15 +167,12 @@ public class ClientView extends JFrame implements Observer {
 			super.setMinimumSize(new Dimension(390, 370));
 			statsOn = false;
 		}
-		super.setContentPane(contentPane);
 		
+		super.setContentPane(contentPane);
 
 		super.pack();
 		super.requestFocus();
 		super.repaint();
-		
-		
-
 	}
 
 }

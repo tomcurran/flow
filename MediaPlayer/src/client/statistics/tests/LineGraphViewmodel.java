@@ -23,10 +23,12 @@ public class LineGraphViewmodel extends Observable implements Observer{
 	public void update(Observable arg0, Object arg1) {
 		int[] data = ((int[]) arg1);
 		
-		data = processData(data);
-		
-		this.setChanged();
-		this.notifyObservers(data);
+		if (data.length > 0) {
+			data = processData(data);
+			
+			this.setChanged();
+			this.notifyObservers(data);
+		}
 		
 	}
 	

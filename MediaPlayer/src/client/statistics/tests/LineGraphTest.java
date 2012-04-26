@@ -2,7 +2,6 @@ package client.statistics.tests;
 
 import java.awt.Dimension;
 
-import client.statistics.LineGraphPanel;
 
 
 public class LineGraphTest{
