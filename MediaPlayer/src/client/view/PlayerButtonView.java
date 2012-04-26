@@ -12,7 +12,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import client.controller.MediaController;
-import client.model.MediaPlayer.Update;
+import client.model.MediaPlayer.STATE;
+import client.model.Update;
 
 @SuppressWarnings("serial")
 public class PlayerButtonView extends JPanel implements Observer {
@@ -27,6 +28,7 @@ public class PlayerButtonView extends JPanel implements Observer {
 	private JButton seekbackButton;
 	private JButton seekforwardButton;
 	private JButton statsButton;
+	private JButton returntoLibrary;
     
 	//The icons.
 	private ImageIcon playIcon;
@@ -35,13 +37,17 @@ public class PlayerButtonView extends JPanel implements Observer {
 	private ImageIcon rewindIcon;
 	private ImageIcon fastForwardIcon;
 	private ImageIcon statsIcon;
+	private ImageIcon returntoLibraryIcon;
 	
 	//The controller the buttons interact with. 
 	private MediaController controller;
+	
+	private ClientView mainView;
 
-	public PlayerButtonView(MediaController controller) {
+	public PlayerButtonView(MediaController controller, ClientView mainView) {
 		this.controller = controller;
 		this.controller.getModel().addObserver(this);
+		this.mainView = mainView;
 		initialiseComponents();
 		updateGUI();
 		initialiseListeners();
@@ -78,14 +84,21 @@ public class PlayerButtonView extends JPanel implements Observer {
 		statsButton.setPreferredSize(new Dimension(30, 30));
 		statsButton.setActionCommand("STATS");
 		
+		returntoLibraryIcon = new ImageIcon("images/icons/library.png");
+		returntoLibrary = new JButton(returntoLibraryIcon);
+		returntoLibrary.setPreferredSize(new Dimension(30, 30));
+		returntoLibrary.setActionCommand("RETURN");
+		
 		bg = new ButtonGroup();
 		
+		bg.add(returntoLibrary);
 		bg.add(playpauseButton);
 		bg.add(stopButton);
 		bg.add(seekbackButton);
 		bg.add(seekforwardButton);
 		bg.add(statsButton);
 		
+		buttons.add(returntoLibrary);
 		buttons.add(playpauseButton);
 		buttons.add(stopButton);
 		buttons.add(seekbackButton);
@@ -102,6 +115,22 @@ public class PlayerButtonView extends JPanel implements Observer {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				controller.playpause(playpauseButton.getActionCommand());
+			}
+		});
+		
+		statsButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				mainView.setStats();
+			}
+		});
+		
+		returntoLibrary.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				controller.getModel().setState(STATE.RETURN);
+				
 			}
 		});
 		

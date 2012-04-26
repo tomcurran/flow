@@ -1,6 +1,7 @@
 package client.view;
 
 import java.awt.Dimension;
+
 import java.awt.Toolkit;
 import java.util.Observable;
 import java.util.Observer;
@@ -11,7 +12,7 @@ import javax.swing.JPanel;
 
 import client.controller.MediaController;
 import client.model.MediaPlayer;
-import client.model.MediaPlayer.Update;
+import client.model.Update;
 
 @SuppressWarnings("serial")
 public class MediaView extends JPanel implements Observer {
