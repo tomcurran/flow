@@ -1,5 +1,6 @@
 package client.view;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,7 +39,7 @@ public class LibraryButtonView extends JPanel{
 	private void initialiseComponents() {
 		
 		//Create JPanel for buttons. 
-		buttons = new JPanel();
+		buttons = new JPanel(new BorderLayout());
 		buttons.setPreferredSize(new Dimension(300, 35));
 		
 		//Setup Icons.
@@ -56,7 +57,7 @@ public class LibraryButtonView extends JPanel{
 		bg.add(panelviewButton);
 
 		//Add buttons to panel.
-		buttons.add(panelviewButton);
+		buttons.add(panelviewButton, BorderLayout.WEST);
 
 		//add to this panel.
 		super.add(buttons);

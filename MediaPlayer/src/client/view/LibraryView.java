@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -89,16 +90,18 @@ public class LibraryView extends JPanel implements Observer, ListCellRenderer {
 		this.setPreferredSize(new Dimension(340, 340));
 		this.setLayout(new BorderLayout());
 		scrollpane = new JScrollPane();
-		scrollpane.setBackground(Color.lightGray);
-		this.setBackground(Color.lightGray);
+		scrollpane.setBackground(Color.GREEN);
+		this.setBackground(Color.BLACK);
 		listView = new JList();
 		listView.setCellRenderer(this);
+		listView.setBackground(new Color(7, 54, 56));
 		panelView = new JList();
 
 		panelView.setCellRenderer(this);
-		panelView.setFixedCellHeight(100);
+		panelView.setFixedCellHeight(90);
 		panelView.setFixedCellWidth(100);
 		panelView.setBorder(new EmptyBorder(10, 10, 10, 10));
+		panelView.setBackground(new Color(7, 54, 56));
 		fillDisplay();
 		scrollpane.getViewport().setView(listView);
 		scrollpane.setPreferredSize(new Dimension(340, 340));
@@ -169,14 +172,20 @@ public class LibraryView extends JPanel implements Observer, ListCellRenderer {
 		// create Jlabel made of Icon and Detail String
 		Border border = LineBorder.createGrayLineBorder();
 		JLabel panelLabel = new JLabel(panelString, thumbnail, JLabel.CENTER);
-		panelLabel.setToolTipText("Double click to play!");
+	
 		panelLabel.setVerticalTextPosition(JLabel.BOTTOM);
 		panelLabel.setHorizontalTextPosition(JLabel.CENTER);
 		panelLabel.setBorder(border);
 
 		JLabel detailLabel = new JLabel(detailString, thumbnail, JLabel.CENTER);
-		detailLabel.setToolTipText("Double click to play!");
-		detailLabel.setBorder(border);
+		Border paddingBorder = BorderFactory.createEmptyBorder(5,5,5,5);
+		Border detailborder = BorderFactory.createLineBorder(new Color(7, 54, 56));
+		
+		detailLabel.setBorder(BorderFactory.createCompoundBorder(detailborder,paddingBorder));
+		
+
+		detailLabel.setSize(new Dimension(330, 100));
+	
 
 		// create panel
 		JPanel panelPane = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -199,7 +208,7 @@ public class LibraryView extends JPanel implements Observer, ListCellRenderer {
 			Component component = (Component) val;
 			component.setForeground(Color.lightGray);
 			component
-					.setBackground(selected ? Color.darkGray : Color.lightGray);
+					.setBackground(selected ? new Color(88, 110, 117) : Color.lightGray);
 			return component;
 		} else {
 			return new JLabel("???");

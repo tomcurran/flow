@@ -1,6 +1,7 @@
 package client.view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.Observable;
@@ -100,6 +101,8 @@ public class ClientView extends JFrame implements Observer {
 			contentPane.removeAll();
 			playerPane.removeAll();
 			mediaView = new MediaView(mediaController);
+			mediaView.setPreferredSize(new Dimension(384, 288));
+			mediaView.setBackground(new Color(7, 54, 56));
 			playerPane.add(mediaView, BorderLayout.CENTER);
 			playerPane.add(playerButtons, BorderLayout.SOUTH);
 			contentPane.add(playerPane, BorderLayout.CENTER);
@@ -109,7 +112,7 @@ public class ClientView extends JFrame implements Observer {
 			mediaController.getModel().openMedia(media);
 			System.out.println("Switched to mediaplayer");
 			super.setContentPane(contentPane);
-			super.setMinimumSize(new Dimension(390, 370));
+			super.setMinimumSize(new Dimension(300, 400));
 
 			super.pack();
 			super.requestFocus();
