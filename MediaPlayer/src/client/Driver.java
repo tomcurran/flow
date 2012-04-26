@@ -14,7 +14,6 @@ import client.controller.LibraryController;
 import client.controller.MediaController;
 import client.model.Library;
 import client.model.MediaPlayer;
-import client.statistics.InboundLoggingController;
 import client.statistics.StatisticsModel;
 import client.view.ClientView;
 
@@ -26,9 +25,7 @@ public class Driver {
 	public static void main(String[] args) {
 
 		// Statistical logging classes
-		StatisticsModel statsLogger = new StatisticsModel();
-		InboundLoggingController logger = InboundLoggingController.getInstance();
-		logger.setModel(statsLogger);
+		final StatisticsModel statsLogger = new StatisticsModel();
 		
 		if (args.length != 4) {
 			System.err.printf("RTSP server host name, listening port and video file required\n");
@@ -78,7 +75,7 @@ public class Driver {
 		MediaPlayer mediaModel = null;
 		Library libraryModel = new Library(serverIp, webServerPort);
 		try {
-			mediaModel = new MediaPlayer(serverIp, rtspServerPort);
+			mediaModel = new MediaPlayer(serverIp, rtspServerPort, statsLogger);
 		} catch (IOException e) {
 			System.err.printf("I/O exception connecting to RTSP server: %s\n", e.getMessage());
 			System.exit(0);
@@ -88,7 +85,7 @@ public class Driver {
 		final LibraryController libraryController = new LibraryController(libraryModel);
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				ClientView view = new ClientView(mediaController, libraryController);
+				ClientView view = new ClientView(mediaController, libraryController, statsLogger);
 				view.setVisible(true);
 			}
 		});

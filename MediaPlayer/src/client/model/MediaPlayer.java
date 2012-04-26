@@ -13,8 +13,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
 import server.rtsp.model.RTPpacket;
+import sun.misc.Cleaner;
 import client.rtsp.model.ClientModel;
-import client.statistics.InboundLoggingController;
+import client.statistics.StatisticsModel;
 
 public class MediaPlayer extends Observable implements Observer {
 
@@ -36,8 +37,8 @@ public class MediaPlayer extends Observable implements Observer {
 	private int videoLength;
 	private InetAddress serverIp;
 	private int rtspServerPort;
+	private StatisticsModel statsLogger;
 
-	private InboundLoggingController logger;
 	private ScheduledExecutorService scheduler;
 	private ScheduledFuture<?> playHandle;
 	private final Runnable play = new Runnable() {
@@ -46,7 +47,7 @@ public class MediaPlayer extends Observable implements Observer {
 		}
 	};
 
-	public MediaPlayer(InetAddress serverIp, int rtspServerPort) throws IOException {
+	public MediaPlayer(InetAddress serverIp, int rtspServerPort, StatisticsModel statsLogger) throws IOException {
 		state = STATE.STOP;
 		currentFrame = 0;
 		buffer = new ArrayList<RTPpacket>();
@@ -56,7 +57,7 @@ public class MediaPlayer extends Observable implements Observer {
 		scheduler = Executors.newScheduledThreadPool(1);
 		this.serverIp = serverIp;
 		this.rtspServerPort = rtspServerPort;
-		logger = InboundLoggingController.getInstance();
+		this.statsLogger = statsLogger;
 		
 	}
 
@@ -163,7 +164,7 @@ public class MediaPlayer extends Observable implements Observer {
 			currentFrame++;
 			this.setChanged();
 			this.notifyObservers(Update.FRAME);
-			logger.logFramePlayed();
+			statsLogger.logFrameExitFromBuffer();
 		}
 	}
 
@@ -190,7 +191,7 @@ public class MediaPlayer extends Observable implements Observer {
 	public void openMedia(String videoName){
 		System.out.println("MEDIA TO OPEN: " + videoName);
 		try {
-			rtspClient = new ClientModel(videoName, serverIp, rtspServerPort);
+			rtspClient = new ClientModel(videoName, serverIp, rtspServerPort, statsLogger);
 			rtspClient.addObserver(this);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

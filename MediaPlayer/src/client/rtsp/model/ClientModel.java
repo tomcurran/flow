@@ -10,6 +10,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
+import client.statistics.StatisticsModel;
+
 import server.rtsp.model.RTPpacket;
 
 public class ClientModel extends Observable {
@@ -34,6 +36,7 @@ public class ClientModel extends Observable {
 	private RTPpacket packet;		// latest packet to be received
 	private RTPTransport rtpTransport;
 	private RTSPTransport rtspTransport;
+	private StatisticsModel statsLogger;
 
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private final Runnable play = new Runnable() {
@@ -43,7 +46,8 @@ public class ClientModel extends Observable {
 	};
 	private ScheduledFuture<?> playHandle;
 
-	public ClientModel(String videoName, InetAddress serverIp, int serverPort) throws IOException {
+	public ClientModel(String videoName, InetAddress serverIp, int serverPort, StatisticsModel statsLogger) throws IOException {
+		this.statsLogger = statsLogger;
 		this.videoName = videoName;
 		this.sequenceNumber = 0;
 		this.sessionId = 0;
@@ -111,7 +115,7 @@ public class ClientModel extends Observable {
 
 	private void receivePacket() {
 		try {
-			this.packet = rtpTransport.receivePacket();
+			this.packet = rtpTransport.receivePacket(statsLogger);
 			this.setChanged();
 			this.notifyObservers(Update.FRAME);
 		} catch (InterruptedIOException iioe) {

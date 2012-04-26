@@ -1,5 +1,6 @@
 package client.statistics;
 
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -12,16 +13,28 @@ import java.util.Observer;
 	 */
 
 public class DelayGraphViewmodel extends Observable implements Observer{
-	 
+	StatisticsModel model;
+	int[] data; 
+	
+	
 	// Constructor
 	public DelayGraphViewmodel (Observable model) {
 		model.addObserver(this);
+		this.model = (StatisticsModel) model;
 	}
 
 	
 	@Override
 	public void update(Observable arg0, Object arg1) {
-		int[] data = ((int[]) arg1);
+		List<Integer> rawData = model.getDelayData();
+		
+		int size = rawData.size();
+		data = new int[size];
+		
+		int count = rawData.size();
+		for (Integer i : rawData) {
+			data[size-count] = i;
+		}
 		
 		data = processData(data);
 		

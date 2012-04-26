@@ -3,6 +3,7 @@ package client.statistics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Queue;
 
@@ -25,7 +26,6 @@ import server.rtsp.model.RTPpacket;
 
 public class StatisticsModel extends Observable implements ActionListener{
 	private static final int LOG_SIZE = 10; // Number of packets to store in history for stat calculation
-	InboundLoggingController logger;
 	Timer clock;
 	
 	// Book keeping
@@ -62,8 +62,6 @@ public class StatisticsModel extends Observable implements ActionListener{
 		packetsReceived = 0;
 		packetsPlayed = 0; 
 		
-		logger = InboundLoggingController.getInstance();
-		logger.setModel(this);
 		lastPacketArrivalTime = 0;
 		packetDelays.add(0);
 		packetJitters.add(0);
@@ -73,7 +71,7 @@ public class StatisticsModel extends Observable implements ActionListener{
 	/*
 	 * Log a packet received by the client
 	 */
-	protected void logPacketReceived(RTPpacket packet, int arrivalTime) {
+	public void logPacketReceived(RTPpacket packet, int arrivalTime) {
 		packetsReceived++;
 		if (packetArrivalTimes.size() > LOG_SIZE) {
 			packetArrivalTimes.poll();
@@ -91,7 +89,7 @@ public class StatisticsModel extends Observable implements ActionListener{
 	}
 	
 	
-	protected void logFrameExitFromBuffer() {
+	public void logFrameExitFromBuffer() {
 		packetsPlayed++;
 	}
 	
@@ -149,6 +147,23 @@ public class StatisticsModel extends Observable implements ActionListener{
 		packetJitterAverage = total/size;
 	}
 
+	
+	protected int getPacketsReceived(){
+		return packetsReceived;
+	}
+	
+	protected int getPacketsPlayed(){
+		return packetsPlayed;
+	}
+	
+	protected List<Integer> getJitterData(){
+		return (List<Integer>) packetJitters;
+	}
+	
+	protected List<Integer> getDelayData(){
+		return (List<Integer>) packetDelays;
+	}
+	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
