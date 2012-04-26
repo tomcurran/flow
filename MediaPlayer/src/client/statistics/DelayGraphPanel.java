@@ -1,5 +1,6 @@
 package client.statistics;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.Arrays;
@@ -7,11 +8,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JPanel;
-
-import client.statistics.tests.LineGraphViewmodel;
-
-
-import java.awt.Color;
 
 	/**
 	 * @author jwb09119
@@ -24,7 +20,7 @@ import java.awt.Color;
 
 public class DelayGraphPanel extends JPanel implements Observer{
 	private DelayGraphViewmodel viewModel;
-	private final Color BACKGROUND = Color.BLACK;
+	private final Color BACKGROUND = Color.GRAY;
 	private final Color[] LINES = {Color.RED, Color.BLUE, Color.YELLOW};
 	
 	private int[] lineData;
@@ -36,6 +32,7 @@ public class DelayGraphPanel extends JPanel implements Observer{
 		lineData = new int[100];
 		Arrays.fill(lineData, 0);
 		this.setSize(size);
+		initialiseSwing();
 
 	}
 	
@@ -55,7 +52,7 @@ public class DelayGraphPanel extends JPanel implements Observer{
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());
 		
 		// Draw graph line
-		g.setColor(LINES[0]);
+		g.setColor(LINES[1]);
 		int size = lineData.length;
 		
 		float widthScale = ((float) this.getWidth())/size;

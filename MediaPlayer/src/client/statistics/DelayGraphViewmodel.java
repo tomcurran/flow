@@ -31,16 +31,17 @@ public class DelayGraphViewmodel extends Observable implements Observer{
 		int size = rawData.size();
 		data = new int[size];
 		
-		int count = rawData.size();
-		for (Integer i : rawData) {
-			data[size-count] = i;
-		}
-		
-		data = processData(data);
-		
-		this.setChanged();
-		this.notifyObservers(data);
-		
+		if (size > 0) {
+			int count = rawData.size();
+			for (int i : rawData) {
+				data[size-count] = i;
+			}
+			
+			data = processData(data);
+			
+			this.setChanged();
+			this.notifyObservers(data);
+		}	
 	}
 	
 	
@@ -52,8 +53,8 @@ public class DelayGraphViewmodel extends Observable implements Observer{
 		
 		int size = reply.length;
 		for (int i = 0; i < size; i++) {
-			float source = array[i];
-			reply[i] = ((int)((source/max) * 100));
+			int source = array[i];
+			reply[i] = ((source/max) * 100);
 		}
 		
 		return reply;
@@ -72,6 +73,6 @@ public class DelayGraphViewmodel extends Observable implements Observer{
 			}
 		}
 
-		return reply;
+		return reply == 0 ? 100 : reply;
 	}
 }

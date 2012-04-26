@@ -30,7 +30,7 @@ public class RTPpacket {
 		headerExtension = 0;
 		headerCC = 0;
 		headerMarker = 0;
-		headerSsrc = (int) System.currentTimeMillis();
+		headerSsrc = (int)(System.currentTimeMillis() - 1335474455338L);
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class RTPpacket {
 			headerPayloadType = header[1] & 127;
 			headerSequenceNumber = unsignedInt(header[3]) + 256 * unsignedInt(header[2]);
 			headerTimeStamp = unsignedInt(header[7]) + 256 * unsignedInt(header[6]) + 65536 * unsignedInt(header[5]) + 16777216 * unsignedInt(header[4]);
-			headerSsrc = unsignedInt(header[8]) + 256 * unsignedInt(header[8]) + 65536 * unsignedInt(header[10]) + 16777216 * unsignedInt(header[11]);
+			headerSsrc = unsignedInt(header[11]) + 256 * unsignedInt(header[10]) + 65536 * unsignedInt(header[9]) + 16777216 * unsignedInt(header[8]);
 		}
 	}
 

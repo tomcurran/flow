@@ -10,9 +10,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 
-import client.statistics.StatisticsModel;
-
 import server.rtsp.model.RTPpacket;
+import client.statistics.StatisticsModel;
 
 public class ClientModel extends Observable {
 

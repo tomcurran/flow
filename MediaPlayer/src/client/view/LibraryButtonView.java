@@ -13,14 +13,13 @@ import javax.swing.JPanel;
 
 import client.controller.LibraryController;
 
-public class LibraryButtonView extends JPanel implements Observer{
+public class LibraryButtonView extends JPanel{
 	//Panel and group that contains the buttons. 
 	private JPanel buttons;
 	private ButtonGroup bg;
 		
     //The buttons. 
 	private JButton panelviewButton;
-	private JButton statsButton;
 	
 	//The Icons.
 	private ImageIcon panelIcon;
@@ -32,9 +31,7 @@ public class LibraryButtonView extends JPanel implements Observer{
 
 	public LibraryButtonView(LibraryController controller) {
 		this.controller = controller;
-		this.controller.getModel().addObserver(this);
 		initialiseComponents();
-		updateGUI();
 		initialiseListeners();
 	}
 	
@@ -47,27 +44,20 @@ public class LibraryButtonView extends JPanel implements Observer{
 		//Setup Icons.
 		panelIcon = new ImageIcon("images/icons/panelview.png");
 		detailIcon = new ImageIcon("images/icons/detailview.png");
-		statsIcon = new ImageIcon("images/icons/fishes.png");
 		
 		//SetupButtons.
 		panelviewButton = new JButton(panelIcon);
 		panelviewButton.setPreferredSize(new Dimension(30, 30));
 		panelviewButton.setActionCommand("PANELVIEW");
-	
-		statsButton = new JButton(statsIcon);
-		statsButton.setPreferredSize(new Dimension(30, 30));
-		statsButton.setActionCommand("STATS");
 		
 		//Setup the ButtonGroup.
 		bg = new ButtonGroup();
 		
 		bg.add(panelviewButton);
-		bg.add(statsButton);
-		
+
 		//Add buttons to panel.
 		buttons.add(panelviewButton);
-		buttons.add(statsButton);
-		
+
 		//add to this panel.
 		super.add(buttons);
 		
@@ -89,25 +79,6 @@ public class LibraryButtonView extends JPanel implements Observer{
 			}
 		});
 		
-		
-		
-		statsButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				//TODO How should we handle sliding in/out the stats panel? 
-			}
-		});
-		
 	}
 
-	private void updateGUI() {
-	}
-
-	
-
-	@Override
-	public void update(Observable arg0, Object arg1) {
-	}
-	
-	
 }

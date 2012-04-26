@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import client.model.MediaPlayer.STATE;
-import client.model.Update;
 import client.model.xmlparser.XMLParser;
 
 public class Library extends Observable implements Observer {

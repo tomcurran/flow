@@ -27,18 +27,22 @@ public class JitterGraphViewmodel extends Observable implements Observer{
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		List<Integer> rawData = model.getJitterData();
+
 		int size = rawData.size();
-		data = new int[size];
 		
-		int count = rawData.size();
-		for (Integer i : rawData) {
-			data[size-count] = i;
+		if (size > 0) {
+			data = new int[size];
+			
+			int count = rawData.size();
+			for (int i : rawData) {
+				data[size-count] = i;
+			}
+			
+			data = processData(data);
+			
+			this.setChanged();
+			this.notifyObservers(data);
 		}
-		
-		data = processData(data);
-		
-		this.setChanged();
-		this.notifyObservers(data);
 		
 	}
 	
@@ -51,8 +55,8 @@ public class JitterGraphViewmodel extends Observable implements Observer{
 		
 		int size = reply.length;
 		for (int i = 0; i < size; i++) {
-			float source = array[i];
-			reply[i] = ((int)((source/max) * 100));
+			int source = array[i];
+			reply[i] = ((source/max) * 100);
 		}
 		
 		return reply;
@@ -70,7 +74,11 @@ public class JitterGraphViewmodel extends Observable implements Observer{
 				reply = candidate;
 			}
 		}
-
+		// TODO - zero graph flatlines
+		if (reply < 10) {
+			reply = 100;
+		}
+		
 		return reply;
 	}
 }

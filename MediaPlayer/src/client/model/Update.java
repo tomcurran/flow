@@ -7,6 +7,8 @@ public enum Update {
 	STATSON,
 	STATE,
 	FRAME,
-	RETURN
+	RETURN,
+	PLAY,
+	PLAYING
 }
 

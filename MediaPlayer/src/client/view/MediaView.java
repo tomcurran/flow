@@ -1,7 +1,6 @@
 package client.view;
 
 import java.awt.Dimension;
-
 import java.awt.Toolkit;
 import java.util.Observable;
 import java.util.Observer;
@@ -47,6 +46,7 @@ public class MediaView extends JPanel implements Observer {
 	public void update(Observable o, Object arg) {
 		switch ((Update) arg) {
 		case FRAME:
+			System.out.println("Updating frame");
 			updateFrame();
 			break;
 		case STATE:
@@ -58,6 +58,7 @@ public class MediaView extends JPanel implements Observer {
 	}
 
 	private void updateFrame() {
+		System.out.println("Setting Frame");
 		MediaPlayer model = this.controller.getModel();
 		iconLabel.setIcon(new ImageIcon(toolkit.createImage(model.getFrame(), 0, model.getFrameLength())));
 	}

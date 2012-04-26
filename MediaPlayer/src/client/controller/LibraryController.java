@@ -1,8 +1,6 @@
 package client.controller;
 
-import java.io.IOException;
 import client.model.Library;
-import client.model.MediaPlayer;
 
 public class LibraryController {
 

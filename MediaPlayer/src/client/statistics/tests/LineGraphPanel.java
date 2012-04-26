@@ -1,5 +1,6 @@
 package client.statistics.tests;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.Arrays;
@@ -7,9 +8,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JPanel;
-
-
-import java.awt.Color;
 
 	/**
 	 * @author jwb09119

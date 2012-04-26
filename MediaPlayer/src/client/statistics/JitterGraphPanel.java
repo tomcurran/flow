@@ -1,5 +1,6 @@
 package client.statistics;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.util.Arrays;
@@ -7,11 +8,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JPanel;
-
-import client.statistics.tests.LineGraphViewmodel;
-
-
-import java.awt.Color;
 
 	/**
 	 * @author jwb09119
@@ -24,7 +20,7 @@ import java.awt.Color;
 
 public class JitterGraphPanel extends JPanel implements Observer{
 	private JitterGraphViewmodel viewModel;
-	private final Color BACKGROUND = Color.BLACK;
+	private final Color BACKGROUND = Color.WHITE;
 	private final Color[] LINES = {Color.RED, Color.BLUE, Color.YELLOW};
 	
 	private int[] lineData;
