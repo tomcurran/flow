@@ -36,7 +36,16 @@ public class JitterGraphViewmodel extends Observable implements Observer{
 			int count = rawData.size();
 			for (int i : rawData) {
 				data[size-count] = i;
+				count--;
 			}
+			
+			//TODO - remove this FROM HERE
+			System.out.print("jitterGraphData: ");
+			for(int i : data) {
+				System.out.print(i+", ");
+			}
+			System.out.println();
+			// TO HERE
 			
 			data = processData(data);
 			
