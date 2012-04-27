@@ -3,7 +3,6 @@ package client.statistics;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.util.Arrays;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -29,12 +28,6 @@ public class LagGraphPanel extends JPanel implements Observer{
 	public LagGraphPanel(Dimension size, Observable model) {
 		viewModel = new LagGraphViewmodel(model);
 		viewModel.addObserver(this);
-		
-		recievedData = new int[100];
-		playedData = new int[100];
-		
-		Arrays.fill(recievedData, 0);
-		Arrays.fill(playedData, 0);
 		
 		this.setSize(size);
 	}
@@ -70,7 +63,7 @@ public class LagGraphPanel extends JPanel implements Observer{
 			
 			int newBarXStart = lastX;
 			int newBarYStart = (int) (recievedData[i]*heightScale);
-			int newBarXEnd = (int) (lastX + widthScale);
+			int newBarXEnd = (int) (lastX + (widthScale/2));
 			int newBarYEnd = newBarYStart;
 			
 			g.drawLine(lastX, lastY, newBarXStart, newBarYStart);
@@ -84,7 +77,7 @@ public class LagGraphPanel extends JPanel implements Observer{
 		// Draw played line
 		g.setColor(LINES[2]);
 		lastY = (int) (playedData[0]*heightScale);
-		lastX = 0;
+		lastX = this.getWidth()/2;
 		for (int i = 1; i < size; i++) {
 			
 			int newBarXStart = lastX;

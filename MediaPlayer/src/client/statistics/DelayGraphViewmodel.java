@@ -32,12 +32,21 @@ public class DelayGraphViewmodel extends Observable implements Observer{
 		data = new int[size];
 		
 		if (size > 0) {
-			int count = rawData.size();
+			int count = size;
 			for (int i : rawData) {
 				data[size-count] = i;
+				count--;
 			}
 			
 			data = processData(data);
+			
+			//TODO - remove this FROM HERE
+//			System.out.print("delayGraphData: ");
+//			for(int i : data) {
+//				System.out.print(i+", ");
+//			}
+//			System.out.println();
+			// TO HERE
 			
 			this.setChanged();
 			this.notifyObservers(data);

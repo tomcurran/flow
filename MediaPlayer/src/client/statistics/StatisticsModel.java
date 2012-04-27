@@ -25,7 +25,7 @@ import server.rtsp.model.RTPpacket;
 	 */
 
 public class StatisticsModel extends Observable implements ActionListener{
-	private static final int LOG_SIZE = 10; // Number of packets to store in history for stat calculation
+	private static final int LOG_SIZE = 100; // Number of packets to store in history for stat calculation
 	Timer clock;
 	
 	// Book keeping
@@ -35,7 +35,7 @@ public class StatisticsModel extends Observable implements ActionListener{
 	int lastPacketDelay;
 
 	// Accessible stats
-	int packetArrivalRate;  //per second
+	double packetArrivalRate;  //per second
 	int packetArrivalDelay; // last value
 	int packetArrivalDelayAverage; // TODO - calculate this
 	
@@ -48,6 +48,8 @@ public class StatisticsModel extends Observable implements ActionListener{
 	//Lag chart data
 	int packetsReceived; //
 	int packetsPlayed; //
+	Queue<Integer> recievedTracker;
+	Queue<Integer> playedTracker;
 	
 	Queue<Integer> packetsRecieved;
 
@@ -58,14 +60,34 @@ public class StatisticsModel extends Observable implements ActionListener{
 		packetDelays = new LinkedList<Integer>();
 		packetJitters = new LinkedList<Integer>();
 		packetArrivalTimes = new LinkedList<Integer>();
+		recievedTracker = new LinkedList<Integer>();
+		playedTracker= new LinkedList<Integer>();
 		
 		packetsReceived = 0;
 		packetsPlayed = 0; 
 		
 		lastPacketArrivalTime = 0;
 		packetArrivalRate = 0;
+		
 		packetDelays.add(0);
+		while(packetDelays.size() < LOG_SIZE) {
+			packetDelays.add(0);
+		}
+		
 		packetJitters.add(0);
+		while(packetJitters.size() < LOG_SIZE) {
+			packetJitters.add(0);
+		}
+		
+		recievedTracker.add(0);
+		while(recievedTracker.size() < LOG_SIZE) {
+			recievedTracker.add(0);
+		}
+		
+		playedTracker.add(0);
+		while(playedTracker.size() < LOG_SIZE) {
+			playedTracker.add(0);
+		}
 		
 		clock.start();
 	}
@@ -75,19 +97,15 @@ public class StatisticsModel extends Observable implements ActionListener{
 	 * Log a packet received by the client
 	 */
 	public void logPacketReceived(RTPpacket packet, int arrivalTime) {
-		System.out.println("got to here1");
 		packetsReceived++;
-		if (packetArrivalTimes.size() > LOG_SIZE) {
+		if (packetArrivalTimes.size() >= LOG_SIZE) {
 			packetArrivalTimes.poll();
 		}
-		System.out.println("got to here2");
 		packetArrivalTimes.add(arrivalTime);
 		
 		logPacketDelay(arrivalTime, packet.getHeaderSsrc());
 		logPacketSequence(arrivalTime, packet.getSequenceNumber());
-		System.out.println("got to here3");
 		recalculateArrivalRate(arrivalTime);
-		System.out.println("got to here4");
 		
 		//finally
 		lastPacket = packet;
@@ -103,20 +121,20 @@ public class StatisticsModel extends Observable implements ActionListener{
 	
 	
 	private void logPacketDelay(int arrivalTime, int timeStamp) {
-		System.out.println("Arrive: "+arrivalTime + " Timestamp "+ timeStamp);
 		int newDelay = arrivalTime - timeStamp;
-		System.out.println("New Delay: " + newDelay);
 		
-		if (packetDelays.size() > LOG_SIZE) {
+		while (packetDelays.size() >= LOG_SIZE) {
 			packetDelays.poll();
 		}
+		packetDelays.add(newDelay);
 		
 		int newJitter = Math.abs((newDelay-lastPacketDelay));
 		lastPacketDelay = newDelay;
 		
-		if (packetJitters.size() > LOG_SIZE) {
+		while (packetJitters.size() >= LOG_SIZE) {
 			packetJitters.poll();
 		}
+		System.out.println("newJitter: "+ newJitter);
 		packetJitters.add(newJitter);
 		
 		recalculatePacketArrivalDelays();
@@ -134,15 +152,11 @@ public class StatisticsModel extends Observable implements ActionListener{
 	private void recalculateArrivalRate(int arrivalTime) {
 		int numberOfPackets=packetArrivalTimes.size();
 		
-		if(numberOfPackets == 1){
+		if(numberOfPackets <= 1){
 			return;
 		}
 		int totalTime = lastPacketArrivalTime - packetArrivalTimes.peek();
-		System.out.println("totaltime "+totalTime+" numberofp: " + numberOfPackets);
-		packetArrivalRate = (int) (numberOfPackets / (((double)totalTime) / 1000)); // milliseconds
-		System.out.println("packetarrivalrate: "+packetArrivalDelay);
-		
-
+		packetArrivalRate = ((double)numberOfPackets / (((double)totalTime) / 1000)); // milliseconds
 	}
 	
 	
@@ -166,13 +180,13 @@ public class StatisticsModel extends Observable implements ActionListener{
 	}
 
 	
-	protected int getPacketsReceived(){
-		return packetsReceived;
+	protected List<Integer> getPacketsReceived(){
+		return (List<Integer>) recievedTracker;
 	}
 	
 	
-	protected int getPacketsPlayed(){
-		return packetsPlayed;
+	protected List<Integer> getPacketsPlayed(){
+		return (List<Integer>) playedTracker;
 	}
 	
 	
@@ -186,8 +200,22 @@ public class StatisticsModel extends Observable implements ActionListener{
 	}
 	
 
+	private void updateTrackers(){
+		
+		while (recievedTracker.size() >= LOG_SIZE) {
+			recievedTracker.poll();
+		}
+		recievedTracker.add(packetsReceived);
+		
+		while (playedTracker.size() >= LOG_SIZE) {
+			playedTracker.poll();
+		}
+		playedTracker.add(packetsPlayed);
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		updateTrackers();
 		this.setChanged();
 		this.notifyObservers();
 	}
