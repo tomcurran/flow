@@ -66,7 +66,7 @@ public class ButtonView extends JPanel implements Observer {
 		seekforwardButton.setPreferredSize(new Dimension(30, 30));
 		seekforwardButton.setActionCommand("FORWARDSEEK");
 
-        statsIcon = new ImageIcon("images/icons/fishes.png");
+        statsIcon = new ImageIcon("images/icons/stats2.png");
 		statsButton = new JButton(statsIcon);
 		statsButton.setPreferredSize(new Dimension(30, 30));
 		statsButton.setActionCommand("STATS");
