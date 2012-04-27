@@ -2,14 +2,14 @@
 	<video>
 		<location>movie1.mjpeg</location>
 		<length>500</length>
-		<period>100</period>
+		<period>40</period>
 		<type>26</type>
 		<thumbnail>/thumbnails/tnmovie1.png</thumbnail>
 	</video>
 	<video>
 		<location>movie2.mjpeg</location>
 		<length>500</length>
-		<period>100</period>
+		<period>40</period>
 		<type>26</type>
 		<thumbnail>/thumbnails/tnmovie2.png</thumbnail>
 	</video>

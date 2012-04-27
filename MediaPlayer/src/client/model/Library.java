@@ -19,7 +19,7 @@ public class Library extends Observable implements Observer {
 	private URL metaFile;
 	private final String metaFileExt = "/videos/database.xml";
 	private XMLParser xmlParser;
-	private String selected;
+	private LibraryEntry selected;
 	
 	public Library(InetAddress serverIp, int webServerPort){
 		catalogue = new ArrayList<LibraryEntry>();
@@ -65,11 +65,16 @@ public class Library extends Observable implements Observer {
 		return catalogue;
 	}
 	
-	public String getSelectedMedia() {
+	public LibraryEntry getSelectedMedia() {
 		return selected;
 	}
 
 	public void setSelected(String media) {
-		selected = media;
+		for (LibraryEntry le : catalogue) {
+			if (le.getLocation().equals(media)) {
+				selected = le;
+				return;
+			}
+		}
 	}
 }

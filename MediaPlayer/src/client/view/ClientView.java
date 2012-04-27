@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 
 import client.controller.LibraryController;
 import client.controller.MediaController;
+import client.model.LibraryEntry;
 import client.model.MediaPlayer.STATE;
 import client.model.Update;
 import client.statistics.DelayGraphPanel;
@@ -108,10 +109,8 @@ public class ClientView extends JFrame implements Observer {
 			playerPane.add(playerButtons, BorderLayout.SOUTH);
 			contentPane.add(playerPane, BorderLayout.CENTER);
 
-			String media = libraryController.getModel().getSelectedMedia();
-			System.out.println("MEDIA WHEN SWITCHED: " + media);
+			LibraryEntry media = libraryController.getModel().getSelectedMedia();
 			mediaController.getModel().openMedia(media);
-			System.out.println("Switched to mediaplayer");
 			super.setContentPane(contentPane);
 			super.setMinimumSize(new Dimension(300, 400));
 
