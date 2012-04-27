@@ -30,11 +30,10 @@ public class MediaPlayer extends Observable implements Observer {
 	private List<RTPpacket> buffer;
 	private int currentFrame;
 	private ClientModel rtspClient;
-	private int playRate;
-	private int videoLength;
 	private InetAddress serverIp;
 	private int rtspServerPort;
 	private StatisticsModel statsLogger;
+	private LibraryEntry libraryEntry;
 
 	private ScheduledExecutorService scheduler;
 	private ScheduledFuture<?> playHandle;
@@ -48,8 +47,6 @@ public class MediaPlayer extends Observable implements Observer {
 		state = STATE.STOP;
 		currentFrame = 0;
 		buffer = new ArrayList<RTPpacket>();
-		videoLength = 500;
-		playRate = 1000 / 20;
 		playHandle = null;
 		scheduler = Executors.newScheduledThreadPool(1);
 		this.serverIp = serverIp;
@@ -174,7 +171,7 @@ public class MediaPlayer extends Observable implements Observer {
 	}
 
 	private void startPlaying() {
-		playHandle = scheduler.scheduleAtFixedRate(play, 0, playRate, MILLISECONDS);
+		playHandle = scheduler.scheduleAtFixedRate(play, 0, Integer.parseInt(libraryEntry.getPeriod()), MILLISECONDS);
 		setState(STATE.PLAY);
 	}
 
@@ -186,17 +183,19 @@ public class MediaPlayer extends Observable implements Observer {
 
 	private boolean bufferUpperBound() {
 		int bufSize = buffer.size();
-		return bufSize == videoLength || (double)(buffer.size() - currentFrame) / videoLength > 0.2;
+		int vidLen = Integer.parseInt(libraryEntry.getLength());
+		return bufSize == vidLen || (double)(buffer.size() - currentFrame) / vidLen > 0.2;
 	}
 
 	private boolean bufferLowerBound() {
-		return (double)(buffer.size() - currentFrame) / videoLength < 0.05;
+		int vidLen = Integer.parseInt(libraryEntry.getLength());
+		return (double)(buffer.size() - currentFrame) / vidLen < 0.05;
 	}
 	
-	public void openMedia(String videoName){
-		System.out.println("MEDIA TO OPEN: " + videoName);
+	public void openMedia(LibraryEntry media){
+		this.libraryEntry = media;
 		try {
-			rtspClient = new ClientModel(videoName, serverIp, rtspServerPort, statsLogger);
+			rtspClient = new ClientModel(media.getLocation(), serverIp, rtspServerPort, statsLogger);
 			rtspClient.addObserver(this);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
