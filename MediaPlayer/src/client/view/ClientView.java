@@ -3,10 +3,13 @@ package client.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import client.controller.LibraryController;
@@ -77,7 +80,7 @@ public class ClientView extends JFrame implements Observer {
 		contentPane.setPreferredSize(new Dimension(380, 280));
 		contentPane.add(libraryView, BorderLayout.CENTER);
 		contentPane.add(libraryButtons, BorderLayout.NORTH);
-		statsPane = new JPanel(new BorderLayout());
+		statsPane = new JPanel(new GridLayout(4, 1));
 		super.setContentPane(contentPane);
 		super.setMinimumSize(new Dimension(390, 370));
 
@@ -151,18 +154,19 @@ public class ClientView extends JFrame implements Observer {
 			Dimension chartSize = new Dimension(300,100);
 			delayGraphPanel = new DelayGraphPanel(chartSize, statsLogger);
 			delayGraphPanel.setPreferredSize(chartSize);
-			statsPane.add(delayGraphPanel, BorderLayout.NORTH);
+			statsPane.add(delayGraphPanel);
 			jitterGraphPanel = new JitterGraphPanel(chartSize, statsLogger);
 			jitterGraphPanel.setPreferredSize(chartSize);
-			statsPane.add(jitterGraphPanel, BorderLayout.CENTER);
+			statsPane.add(jitterGraphPanel);
 			lagGraphPanel = new LagGraphPanel(chartSize, statsLogger);
 			lagGraphPanel.setPreferredSize(chartSize);
-			statsPane.add(lagGraphPanel, BorderLayout.SOUTH);
-			
+			statsPane.add(lagGraphPanel);
+	
 			contentPane.add(statsPane, BorderLayout.EAST);
 			super.setMinimumSize(new Dimension(700, 370));
 			statsOn = true;
 		} else {
+			statsPane.removeAll();
 			contentPane.remove(statsPane);
 			super.setMinimumSize(new Dimension(390, 370));
 			statsOn = false;
