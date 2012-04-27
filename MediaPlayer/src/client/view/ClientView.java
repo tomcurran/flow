@@ -19,6 +19,7 @@ import client.model.Update;
 import client.statistics.DelayGraphPanel;
 import client.statistics.JitterGraphPanel;
 import client.statistics.LagGraphPanel;
+import client.statistics.MetricsPanel;
 import client.statistics.StatisticsModel;
 import client.statistics.tests.LineGraphPanel;
 
@@ -35,6 +36,7 @@ public class ClientView extends JFrame implements Observer {
 	
 	// Stats stuff
 	private StatisticsModel statsLogger;
+	private MetricsPanel metricsPanel;
 	private DelayGraphPanel delayGraphPanel;
 	private JitterGraphPanel jitterGraphPanel;
 	private LagGraphPanel lagGraphPanel;
@@ -161,6 +163,9 @@ public class ClientView extends JFrame implements Observer {
 			lagGraphPanel = new LagGraphPanel(chartSize, statsLogger);
 			lagGraphPanel.setPreferredSize(chartSize);
 			statsPane.add(lagGraphPanel);
+			
+			metricsPanel = new MetricsPanel(statsLogger);
+			statsPane.add(metricsPanel);
 	
 			contentPane.add(statsPane, BorderLayout.EAST);
 			super.setMinimumSize(new Dimension(700, 370));
