@@ -10,6 +10,7 @@ import java.util.Queue;
 import javax.swing.Timer;
 
 import server.rtsp.model.RTPpacket;
+import sun.security.x509.AVA;
 
 	/**
 	 * @author jwb09119
@@ -32,12 +33,11 @@ public class StatisticsModel extends Observable implements ActionListener{
 	RTPpacket lastPacket;
 	int lastPacketArrivalTime;
 	int lastPacketSequenceNumber;
-	int lastPacketDelay;
+	int lastPacketDelay;// last value
 
 	// Accessible stats
 	double packetArrivalRate;  //per second
-	int packetArrivalDelay; // last value
-	int packetArrivalDelayAverage; // TODO - calculate this
+	double packetArrivalDelay; 
 	
 	int packetJitterAverage; // Running Average (Absolute)
 	int packetOutOfSequenceCount;
@@ -68,6 +68,7 @@ public class StatisticsModel extends Observable implements ActionListener{
 		
 		lastPacketArrivalTime = 0;
 		packetArrivalRate = 0;
+
 		
 		packetDelays.add(0);
 		while(packetDelays.size() < LOG_SIZE) {
@@ -134,7 +135,7 @@ public class StatisticsModel extends Observable implements ActionListener{
 		while (packetJitters.size() >= LOG_SIZE) {
 			packetJitters.poll();
 		}
-		System.out.println("newJitter: "+ newJitter);
+
 		packetJitters.add(newJitter);
 		
 		recalculatePacketArrivalDelays();
@@ -197,6 +198,19 @@ public class StatisticsModel extends Observable implements ActionListener{
 	
 	protected List<Integer> getDelayData(){
 		return (List<Integer>) packetDelays;
+	}
+	
+	public double getPacketArrivalRate() {
+		return packetArrivalRate;
+	}
+	public double getAverageArrivalDelay() {
+		return packetArrivalDelay;
+	}
+	public int getOutOfOrderCount() {
+		return packetOutOfSequenceCount;
+	}
+	public double getAveragePacketJitter(){
+		return packetJitterAverage;
 	}
 	
 
